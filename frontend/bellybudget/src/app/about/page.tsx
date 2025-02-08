@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Card, CardContent } from "../../components/Card"
-import { Avatar } from "../../components/Avatar"
-import Link from "next/link"
-import styles from "./about.module.css"
+import { useEffect, useState } from "react";
+import { Card, CardContent } from "../../components/Card";
+import Link from "next/link";
+import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa"; // ✅ Import social icons
+import styles from "./about.module.css";
 
 export default function AboutPage() {
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -52,25 +52,26 @@ export default function AboutPage() {
             style={{ animationDelay: `${0.8 + index * 0.2}s` }}
           >
             <CardContent className={styles.cardContent}>
-              <Avatar src={member.avatar} alt={member.name} className={styles.avatar} />
               <h3>{member.name}</h3>
               <p className={styles.memberRole}>{member.role}</p>
               <p className={styles.memberBio}>{member.bio}</p>
               <div className={styles.socialLinks}>
                 <Link href={member.github} target="_blank" rel="noopener noreferrer">
-                  GitHub
+                  <FaGithub size={24} className={styles.icon} />
                 </Link>
                 <Link href={member.linkedin} target="_blank" rel="noopener noreferrer">
-                  LinkedIn
+                  <FaLinkedin size={24} className={styles.icon} />
                 </Link>
-                <Link href={`mailto:${member.email}`}>Email</Link>
+                <Link href={`mailto:${member.email}`}>
+                  <FaEnvelope size={24} className={styles.icon} />
+                </Link>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 const teamMembers = [
@@ -78,7 +79,6 @@ const teamMembers = [
     name: "Joseph Cheng",
     role: "Computer Science and Math Sophomore at NYU",
     bio: "Joseph is passionate about creating intuitive user experiences and optimizing backend performance.",
-    avatar: "/placeholder.svg?height=100&width=100",
     github: "https://github.com/jxc2008",
     linkedin: "https://www.linkedin.com/in/joseph-cheng-b03886296/",
     email: "joseph.x.cheng@gmail.com",
@@ -87,7 +87,6 @@ const teamMembers = [
     name: "Kevin Dong",
     role: "Computer Science and Math Sophomore at NYU",
     bio: "Kevin brings creativity and problem-solving skills to make BellyBudget both efficient and user-friendly.",
-    avatar: "/placeholder.svg?height=100&width=100",
     github: "https://github.com/kevinlindong",
     linkedin: "https://www.linkedin.com/in/kevinlindong/",
     email: "kevindong@nyu.edu",
@@ -96,7 +95,6 @@ const teamMembers = [
     name: "Eshaan Saxena",
     role: "Computer Science and Math Sophomore at NYU",
     bio: "Eshaan leverages his analytical skills to provide innovative solutions and enhance user experience.",
-    avatar: "/placeholder.svg?height=100&width=100",
     github: "https://github.com/seaking117",
     linkedin: "https://www.linkedin.com/in/eshaan-saxena/",
     email: "eshaan.saxena117@gmail.com",
@@ -105,10 +103,8 @@ const teamMembers = [
     name: "Ritvik Rallapalli",
     role: "Computer Science and Math Sophomore at NYU",
     bio: "Ritvik ensures that BellyBudget continues to evolve to meet our users' needs and exceed their expectations.",
-    avatar: "/placeholder.svg?height=100&width=100",
     github: "https://github.com/ritvikra",
     linkedin: "https://www.linkedin.com/in/ritvikrallapalli/",
     email: "ritvikrallapalli@gmail.com",
   },
-]
-
+];

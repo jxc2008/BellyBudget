@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import { useRouter } from "next/navigation"; // Correct useRouter import for Next.js App Router
 import styles from "./Navbar.module.css";
 
 const Navbar = () => {
-  const router = useRouter(); // Initialize Next.js router
+  const router = useRouter();
 
   return (
     <nav className={styles.navbar}>
@@ -14,11 +14,12 @@ const Navbar = () => {
           BellyBudget
         </Link>
         <div className={styles.links}>
-          <Link href="/about" className={styles.link}>
+          {/* Styled About Button */}
+          <button className={styles.navButton} onClick={() => router.push("/about")}>
             About
-          </Link>
-          {/* Redirects to /auth instead of /login */}
-          <button className={styles.link} onClick={() => router.push("/auth")}>
+          </button>
+          {/* Styled Login Button */}
+          <button className={styles.navButton} onClick={() => router.push("/auth")}>
             Login
           </button>
         </div>

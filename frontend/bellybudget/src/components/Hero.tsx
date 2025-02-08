@@ -1,17 +1,38 @@
-"use client"; // Required for event handlers in Next.js App Router
+"use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import styles from "./Hero.module.css";
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import styles from "./Hero.module.css"; // ✅ Ensure correct import
 
 const Hero = () => {
   const router = useRouter();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleGetStarted = () => {
+    if (user) {
+      router.push("/dashboard"); // ✅ Redirect to dashboard if logged in
+    } else {
+      router.push("/auth"); // ✅ Redirect to login page if not logged in
+    }
+  };
 
   return (
     <div className={styles.hero}>
       <div className={styles.container}>
         <h1 className={styles.title}>Eat Smart, Spend Less</h1>
         <p className={styles.subtitle}>Plan your meals based on your budget with ease.</p>
-        <button className={styles.cta} onClick={() => router.push("/dashboard")}>
+        {/* ✅ Ensures button styling is applied */}
+        <button className={styles.ctaButton} onClick={handleGetStarted}>
           Get Started
         </button>
       </div>

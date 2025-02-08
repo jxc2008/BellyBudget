@@ -5,30 +5,30 @@
     justify-content: center;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: var(--white);
-  }
-  
-  .container {
+}
+
+.container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
-  }
-  
-  .title {
+}
+
+.title {
     font-size: 3rem;
     font-weight: bold;
     margin-bottom: 1rem;
     animation: fadeIn 0.8s ease-out forwards;
-  }
-  
-  .subtitle {
+}
+
+.subtitle {
     font-size: 1.25rem;
     margin-bottom: 2rem;
     animation: fadeIn 0.8s ease-out 0.2s forwards;
     opacity: 0;
-  }
-  
-  .cta {
+}
+
+.ctaButton {
     background-color: var(--white);
     color: var(--primary-color);
     font-size: 1rem;
@@ -40,34 +40,32 @@
     transition: all 0.3s ease;
     animation: fadeIn 0.8s ease-out 0.4s forwards, pulse 2s infinite;
     opacity: 0;
-  }
-  
-  .cta:hover {
+}
+
+.ctaButton:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  @keyframes fadeIn {
+}
+
+@keyframes fadeIn {
     from {
-      opacity: 0;
-      transform: translateY(20px);
+        opacity: 0;
+        transform: translateY(20px);
     }
     to {
-      opacity: 1;
-      transform: translateY(0);
+        opacity: 1;
+        transform: translateY(0);
     }
-  }
-  
-  @keyframes pulse {
+}
+
+@keyframes pulse {
     0% {
-      transform: scale(1);
+        transform: scale(1);
     }
     50% {
-      transform: scale(1.05);
+        transform: scale(1.05);
     }
     100% {
-      transform: scale(1);
+        transform: scale(1);
     }
-  }
-  
-  
+}
