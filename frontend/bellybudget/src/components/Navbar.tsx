@@ -1,7 +1,12 @@
-import Link from "next/link"
-import styles from "./Navbar.module.css"
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import styles from "./Navbar.module.css";
 
 const Navbar = () => {
+  const router = useRouter(); // Initialize Next.js router
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
@@ -12,14 +17,14 @@ const Navbar = () => {
           <Link href="/about" className={styles.link}>
             About
           </Link>
-          <Link href="/login" className={styles.link}>
+          {/* Redirects to /auth instead of /login */}
+          <button className={styles.link} onClick={() => router.push("/auth")}>
             Login
-          </Link>
+          </button>
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
-
+export default Navbar;
