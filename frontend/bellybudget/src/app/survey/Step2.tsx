@@ -21,8 +21,6 @@ const Step2 = ({ formData, setFormData, handleNext, handleBack }) => {
         <option value="1">1 meal</option>
         <option value="2">2 meals</option>
         <option value="3">3 meals</option>
-        <option value="4">4 meals</option>
-        <option value="5+">5+ meals</option>
       </select>
       <div className={styles.buttonContainer} style={{ marginTop: "2rem" }}>
         <button className={styles.backButton} onClick={handleBack}>
