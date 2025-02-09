@@ -7,16 +7,7 @@ import { useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { BudgetProvider } from "@/contexts/BudgetContext";
 import styles from "./dashboard.module.css";
-import {
-  Home,
-  Settings,
-  Calendar as CalendarIcon,
-  User,
-  ShoppingBag,
-  PizzaIcon as FastFood,
-  Coffee,
-  PocketIcon as BudgetIcon,
-} from "lucide-react";
+import { Home, Settings, Calendar as CalendarIcon, User, ShoppingBag, Pizza, Coffee, Pocket as BudgetIcon, ClipboardList } from "lucide-react";
 
 // Import Recharts components
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
@@ -155,7 +146,7 @@ export default function Dashboard() {
 
   const navItems = [
     { id: "overview", label: "Overview", icon: Home },
-    { id: "planner", label: "Planner", icon: CalendarIcon },
+    { id: "planner", label: "Planner", icon: ClipboardList },
     { id: "calendar", label: "Calendar", icon: CalendarIcon },
     { id: "budget", label: "Budget", icon: BudgetIcon },
     { id: "profile", label: "Profile", icon: User },
