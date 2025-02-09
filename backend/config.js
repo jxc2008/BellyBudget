@@ -8,5 +8,6 @@ module.exports = {
   PORT: process.env.PORT || 3000,
   PLACE: process.env.PLACE,
   PLAID: process.env.PLAID,
-  PLAID_ID: process.env.PLAID_ID
+  PLAID_ID: process.env.PLAID_ID,
+  OPENAI: process.env.OPENAI
 };
