@@ -205,11 +205,10 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
         </form>
       </div>
 
-      {/* 🔴 Welcome Message & Logout Button (Added at the Bottom) */}
+      {/* 🔴 Centered Welcome Message & Logout Button */}
       <div className={styles.welcomeContainer}>
-        <h2 className={styles.welcomeMessage}></h2>
         <button
-          className={styles.logoutButton}
+          className={styles.centeredLogoutButton}
           onClick={() => signOut(auth)}
         >
           Logout
