@@ -27,7 +27,11 @@ export default function WeeklyCalendar({ onClose }: WeeklyCalendarProps) {
   const { weeklyPlan, updateWeeklyPlan, recommendedRestaurants } = useBudget();
 
   // Temporarily cast updateWeeklyPlan to a function type that accepts three strings.
-  const safeUpdateWeeklyPlan = updateWeeklyPlan as (day: string, mealType: string, value: string) => void;
+  const safeUpdateWeeklyPlan = updateWeeklyPlan as (
+    day: string,
+    mealType: string,
+    value: string
+  ) => void;
 
   // Update meal function with explicit parameter types.
   const handleMealUpdate = (day: string, mealType: string, value: string): void => {
@@ -63,18 +67,20 @@ export default function WeeklyCalendar({ onClose }: WeeklyCalendarProps) {
         <div className={styles.recommendations}>
           <h3>Recommended Restaurants</h3>
           <ul>
-            {recommendedRestaurants.map((restaurant: RecommendedRestaurant) => (
-              <li key={restaurant.id}>
-                {restaurant.name} - ${restaurant.price}
-                <button
-                  onClick={() =>
-                    handleMealUpdate("monday", "lunch", restaurant.name)
-                  }
-                >
-                  Add to Plan
-                </button>
-              </li>
-            ))}
+            {(recommendedRestaurants as RecommendedRestaurant[]).map(
+              (restaurant: RecommendedRestaurant) => (
+                <li key={restaurant.id}>
+                  {restaurant.name} - ${restaurant.price}
+                  <button
+                    onClick={() =>
+                      handleMealUpdate("monday", "lunch", restaurant.name)
+                    }
+                  >
+                    Add to Plan
+                  </button>
+                </li>
+              )
+            )}
           </ul>
         </div>
       </div>
