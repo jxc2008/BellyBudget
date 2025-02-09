@@ -24,25 +24,29 @@ export default function AboutPage() {
       </p>
 
       <div className={styles.cardGrid}>
-        {/* Wrap the Card component in a div so that the className is applied to the wrapper instead */}
         <div className={styles.card}>
           <Card>
-            <CardContent className={styles.cardContent}>
-              <h2>Our Mission</h2>
-              <p>
-                At BellyBudget, we're passionate about helping people balance their love for food with their financial goals. Our app is designed to make meal planning, grocery shopping, and budget tracking seamless and enjoyable.
-              </p>
-            </CardContent>
+            {/* Wrap CardContent in a div so the styling can be applied */}
+            <div className={styles.cardContentWrapper}>
+              <CardContent>
+                <h2>Our Mission</h2>
+                <p>
+                  At BellyBudget, we're passionate about helping people balance their love for food with their financial goals. Our app is designed to make meal planning, grocery shopping, and budget tracking seamless and enjoyable.
+                </p>
+              </CardContent>
+            </div>
           </Card>
         </div>
         <div className={styles.card}>
           <Card>
-            <CardContent className={styles.cardContent}>
-              <h2>Our Vision</h2>
-              <p>
-                We envision a world where everyone can enjoy delicious, nutritious meals without breaking the bank. BellyBudget is our contribution to making this vision a reality, one meal at a time.
-              </p>
-            </CardContent>
+            <div className={styles.cardContentWrapper}>
+              <CardContent>
+                <h2>Our Vision</h2>
+                <p>
+                  We envision a world where everyone can enjoy delicious, nutritious meals without breaking the bank. BellyBudget is our contribution to making this vision a reality, one meal at a time.
+                </p>
+              </CardContent>
+            </div>
           </Card>
         </div>
       </div>
@@ -56,22 +60,24 @@ export default function AboutPage() {
             style={{ animationDelay: `${0.8 + index * 0.2}s` }}
           >
             <Card>
-              <CardContent className={styles.cardContent}>
-                <h3>{member.name}</h3>
-                <p className={styles.memberRole}>{member.role}</p>
-                <p className={styles.memberBio}>{member.bio}</p>
-                <div className={styles.socialLinks}>
-                  <Link href={member.github} target="_blank" rel="noopener noreferrer">
-                    <FaGithub size={24} className={styles.icon} />
-                  </Link>
-                  <Link href={member.linkedin} target="_blank" rel="noopener noreferrer">
-                    <FaLinkedin size={24} className={styles.icon} />
-                  </Link>
-                  <Link href={`mailto:${member.email}`}>
-                    <FaEnvelope size={24} className={styles.icon} />
-                  </Link>
-                </div>
-              </CardContent>
+              <div className={styles.cardContentWrapper}>
+                <CardContent>
+                  <h3>{member.name}</h3>
+                  <p className={styles.memberRole}>{member.role}</p>
+                  <p className={styles.memberBio}>{member.bio}</p>
+                  <div className={styles.socialLinks}>
+                    <Link href={member.github} target="_blank" rel="noopener noreferrer">
+                      <FaGithub size={24} className={styles.icon} />
+                    </Link>
+                    <Link href={member.linkedin} target="_blank" rel="noopener noreferrer">
+                      <FaLinkedin size={24} className={styles.icon} />
+                    </Link>
+                    <Link href={`mailto:${member.email}`}>
+                      <FaEnvelope size={24} className={styles.icon} />
+                    </Link>
+                  </div>
+                </CardContent>
+              </div>
             </Card>
           </div>
         ))}
