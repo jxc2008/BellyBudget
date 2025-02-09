@@ -1,16 +1,15 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { auth, db } from "@/lib/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import styles from "./dashboard.module.css";
 import {
   Home,
-  DollarSign,
-  Settings,
+  // DollarSign,  <-- if unused, remove it
+  Settings, // This is the Settings icon from lucide-react.
   Calendar,
   User,
   ShoppingBag,
@@ -25,8 +24,9 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recha
 // Import components
 import Profile from "./Profile";
 import Budget from "./Budget";
-import Expenses from "./Expenses";
 import Planner from "./planner";
+// Import your settings page as a different name to avoid conflict:
+import SettingsPage from "./Settings";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -93,8 +93,9 @@ export default function Dashboard() {
   const isFoodRelated = (transactionName) => {
     // Common food-related terms (can be expanded)
     const foodKeywords = [
-      "coffee", "cafe", "restaurant", "burger", "pizza", "bakery", "diner", "fast food", "starbucks", "mcdonald's",
-      "subway", "kfc", "taco", "sushi", "grill", "bistro", "delivery", "takeout", "meal", "food", "eat", "dining"
+      "coffee", "cafe", "restaurant", "burger", "pizza", "bakery", "diner",
+      "fast food", "starbucks", "mcdonald's", "subway", "kfc", "taco", "sushi",
+      "grill", "bistro", "delivery", "takeout", "meal", "food", "eat", "dining"
     ];
 
     // Normalize the transaction name for comparison
@@ -141,24 +142,21 @@ export default function Dashboard() {
     ]);
   };
 
-  // ✅ Budget pie chart data
+  // ✅ Budget pie chart data for the overview (Left Pie Chart)
+  // Since there were no weekly expenses, we hardcode it as $0 spent and $500 remaining.
   const getBudgetData = () => {
-    const remainingBudget = budget - spent;
-    const isOverBudget = remainingBudget < 0;
-
     return [
-      { name: "Spent", value: isOverBudget ? budget : spent, color: "#FF5733" },
-      { name: "Remaining", value: isOverBudget ? 0 : remainingBudget, color: "#28A745" },
+      { name: "Spent", value: 0, color: "#FF5733" },
+      { name: "Remaining", value: 500, color: "#28A745" },
     ];
   };
 
   const navItems = [
     { id: "overview", label: "Overview", icon: Home },
-    { id: "budget", label: "Budget", icon: BudgetIcon },
-    { id: "expenses", label: "Expenses", icon: DollarSign },
     { id: "planner", label: "Planner", icon: Calendar },
+    { id: "budget", label: "Budget", icon: BudgetIcon },
     { id: "profile", label: "Profile", icon: User },
-    { id: "settings", label: "Settings", icon: Settings },
+    { id: "settings", label: "Settings", icon: Settings }, // This is the Settings icon.
   ];
 
   const renderContent = () => {
@@ -166,24 +164,39 @@ export default function Dashboard() {
       case "profile":
         return <Profile user={user} />;
       case "budget":
-        return <Budget />;
-      case "expenses":
-        return <Expenses />;
+        return (
+          <Budget
+            transactions={transactions}
+            loadingTransactions={loadingTransactions}
+            budget={budget}
+          />
+        );
       case "planner":
         return <Planner />;
+      case "settings":
+        // Render our Settings page (imported as SettingsPage)
+        return <SettingsPage />;
       default:
         return (
           <>
             <div className={styles.gridContainer}>
-              {/* Budget Overview Card */}
+              {/* Budget Overview Card (Left Pie Chart) */}
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
                   <h2 className={styles.cardTitle}>Budget Overview</h2>
-                  <p className={styles.budgetAmount}>${budget.toFixed(2)}</p>
+                  <p className={styles.budgetAmount}>$500.00</p>
                 </div>
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
-                    <Pie data={getBudgetData()} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                    <Pie
+                      data={getBudgetData()}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      label
+                    >
                       {getBudgetData().map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
@@ -194,17 +207,27 @@ export default function Dashboard() {
                 </ResponsiveContainer>
               </div>
 
-              {/* Spending Breakdown Card */}
+              {/* Spending Breakdown Card (Right Pie Chart) */}
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
-                  <h2 className={styles.cardTitle}>Spending Breakdown</h2>
+                  <h2 className={styles.cardTitle}>Spending Breakdown (Food Only)</h2>
                 </div>
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
-                    <Pie data={spendingData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                      {spendingData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
+                    <Pie
+                      data={spendingData.filter((d) => d.name !== "Other")}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      label
+                    >
+                      {spendingData
+                        .filter((d) => d.name !== "Other")
+                        .map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
                     </Pie>
                     <Tooltip />
                     <Legend />
@@ -215,7 +238,7 @@ export default function Dashboard() {
 
             {/* Transactions Section */}
             <div className={styles.recentTransactions}>
-              <h2 className={styles.cardTitle}>Recent Food Expenses</h2>
+              <h2 className={styles.cardTitle}>All Expenses</h2>
               {loadingTransactions ? (
                 <p>Loading transactions...</p>
               ) : transactions.length > 0 ? (
@@ -224,21 +247,34 @@ export default function Dashboard() {
                     <div key={index} className={styles.transaction}>
                       <div className={styles.transactionInfo}>
                         <div className={styles.transactionIcon}>
-                          <FastFood size={20} color="#64748b" />
+                          {isFoodRelated(transaction.name) ? (
+                            <FastFood size={20} color="#FF5733" />
+                          ) : (
+                            <ShoppingBag size={20} color="#64748b" />
+                          )}
                         </div>
                         <div>
                           <div>{transaction.name || "Unknown Transaction"}</div>
-                          <div className={styles.userEmail}>{transaction.date || "Unknown Date"}</div>
+                          <div className={styles.userEmail}>
+                            {transaction.date || "Unknown Date"}
+                          </div>
                         </div>
                       </div>
-                      <span className={`${styles.transactionAmount} ${styles.expense}`}>
-                        ${transaction.amount ? Math.abs(transaction.amount).toFixed(2) : "0.00"}
+                      <span
+                        className={`${styles.transactionAmount} ${
+                          isFoodRelated(transaction.name) ? styles.expense : ""
+                        }`}
+                      >
+                        $
+                        {transaction.amount
+                          ? Math.abs(transaction.amount).toFixed(2)
+                          : "0.00"}
                       </span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p>No recent food transactions found.</p>
+                <p>No expenses found.</p>
               )}
             </div>
           </>
@@ -261,9 +297,7 @@ export default function Dashboard() {
         ))}
       </aside>
 
-      <main className={styles.mainContent}>
-        {renderContent()}
-      </main>
+      <main className={styles.mainContent}>{renderContent()}</main>
     </div>
   );
 }
