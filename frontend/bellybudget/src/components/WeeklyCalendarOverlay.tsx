@@ -1,69 +1,80 @@
-// WeeklyCalendarOverlay.tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
+import { useBudget } from "@/contexts/BudgetContext";
 import styles from "./WeeklyCalendarOverlay.module.css";
 
+// Import Firebase and Firestore methods
 import { db, auth } from "@/lib/firebase";
-import { doc, onSnapshot, setDoc, updateDoc, deleteField } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
-// Helper to format a meal value for display
-const formatMealValue = (val: any): string => {
-  if (typeof val === "object" && val !== null) {
-    return `${val.name} (${val.rating}★) - $${val.estimated_cost ? val.estimated_cost.toFixed(2) : "N/A"}`;
-  }
-  return val || "";
-};
-
+// Define the props for the overlay component
 interface WeeklyCalendarOverlayProps {
   onClose: () => void;
 }
 
+// (Optional) Define an interface for the weekly plan if not defined elsewhere
+export interface WeeklyPlan {
+  [day: string]: {
+    [mealType: string]: string;
+  };
+}
+
+// Define the detail for the custom "restaurantSelect" event
+interface RestaurantSelectDetail {
+  restaurant: {
+    name: string;
+    // Include other restaurant properties if needed
+  };
+}
+
 export default function WeeklyCalendarOverlay({ onClose }: WeeklyCalendarOverlayProps) {
   const [isClosing, setIsClosing] = useState(false);
-  // localWeeklyPlan reflects the current meal plan data from Firebase.
-  const [localWeeklyPlan, setLocalWeeklyPlan] = useState<any>({});
+  const { weeklyPlan, updateWeeklyPlan } = useBudget(); // Now updateWeeklyPlan is defined and available
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [selectedMealSlot, setSelectedMealSlot] = useState<string | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
-
-  // Days and meal types (used for iterating over the week)
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  const mealTypes = ["breakfast", "lunch", "dinner"];
 
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
       onClose();
-    }, 300);
+    }, 300); // Match this with the animation duration
   };
 
-  // Close the overlay when clicking outside it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (overlayRef.current && !overlayRef.current.contains(event.target as Node)) {
         handleClose();
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
-  // Subscribe to the meal plan from Firebase so the overlay always shows the latest data.
+  // Handle restaurant selection from map using a custom event.
   useEffect(() => {
-    const user = auth.currentUser;
-    if (!user) return;
-    const mealPlanRef = doc(db, "users", user.uid, "mealPlan", "calendar");
-    const unsubscribe = onSnapshot(mealPlanRef, (docSnap) => {
-      if (docSnap.exists()) {
-        setLocalWeeklyPlan(docSnap.data());
-      } else {
-        setLocalWeeklyPlan({});
+    const handleRestaurantSelect = (event: CustomEvent<RestaurantSelectDetail>) => {
+      if (event.detail && selectedDay && selectedMealSlot) {
+        const restaurant = event.detail.restaurant;
+        updateWeeklyPlan(selectedDay, selectedMealSlot, restaurant.name);
       }
-    });
-    return () => unsubscribe();
-  }, []);
+    };
 
-  // Save (or update) the weekly meal plan to Firebase.
+    // Type-cast to EventListener for add/removeEventListener
+    const eventListener = handleRestaurantSelect as EventListener;
+    window.addEventListener("restaurantSelect", eventListener);
+    return () => window.removeEventListener("restaurantSelect", eventListener);
+  }, [selectedDay, selectedMealSlot, updateWeeklyPlan]);
+
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const mealTypes = ["breakfast", "lunch", "dinner"];
+
+  // Function to send the weekly plan data to Firebase
   const saveWeeklyMealPlanToFirebase = async () => {
     const user = auth.currentUser;
     if (!user) {
@@ -72,42 +83,10 @@ export default function WeeklyCalendarOverlay({ onClose }: WeeklyCalendarOverlay
     }
     const mealPlanRef = doc(db, "users", user.uid, "mealPlan", "calendar");
     try {
-      await setDoc(mealPlanRef, localWeeklyPlan, { merge: true });
+      await setDoc(mealPlanRef, weeklyPlan, { merge: true });
       console.log("✅ Weekly meal plan saved to Firebase");
     } catch (error) {
       console.error("❌ Error saving weekly meal plan:", error);
-    }
-  };
-
-  // Remove a single meal entry (for a given day and meal type) using deleteField so that it is removed from Firebase.
-  const handleRemoveWeeklyMeal = async (day: string, mealType: string) => {
-    const user = auth.currentUser;
-    if (!user) return;
-    const mealPlanRef = doc(db, "users", user.uid, "mealPlan", "calendar");
-    try {
-      await updateDoc(mealPlanRef, { [`${day.toLowerCase()}.${mealType}`]: deleteField() });
-      console.log(`Removed ${mealType} plan for ${day}`);
-    } catch (error) {
-      console.error(`Error removing ${mealType} plan for ${day}:`, error);
-    }
-  };
-
-  // Remove all events for the week by deleting every meal field in every day.
-  const handleRemoveAllWeeklyMeals = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-    const mealPlanRef = doc(db, "users", user.uid, "mealPlan", "calendar");
-    try {
-      const updates: { [key: string]: any } = {};
-      days.forEach(day => {
-        mealTypes.forEach(mealType => {
-          updates[`${day.toLowerCase()}.${mealType}`] = deleteField();
-        });
-      });
-      await updateDoc(mealPlanRef, updates);
-      console.log("Removed all weekly events successfully");
-    } catch (error) {
-      console.error("Error removing all weekly events:", error);
     }
   };
 
@@ -135,43 +114,26 @@ export default function WeeklyCalendarOverlay({ onClose }: WeeklyCalendarOverlay
                   type="text"
                   className={styles.mealInput}
                   value={
-                    localWeeklyPlan[day.toLowerCase()]
-                      ? formatMealValue(localWeeklyPlan[day.toLowerCase()][mealType])
+                    weeklyPlan[day.toLowerCase()]
+                      ? weeklyPlan[day.toLowerCase()][mealType] || ""
                       : ""
                   }
-                  onChange={(e) => {
-                    const user = auth.currentUser;
-                    if (!user) return;
-                    const mealPlanRef = doc(db, "users", user.uid, "mealPlan", "calendar");
-                    // Update the field value in Firebase.
-                    const field = `${day.toLowerCase()}.${mealType}`;
-                    updateDoc(mealPlanRef, { [field]: e.target.value }).catch((error) => {
-                      console.error("Error updating meal plan:", error);
-                    });
+                  onChange={(e) => updateWeeklyPlan(day.toLowerCase(), mealType, e.target.value)}
+                  onFocus={() => {
+                    setSelectedDay(day.toLowerCase());
+                    setSelectedMealSlot(mealType);
                   }}
-                  placeholder={`Enter ${mealType} plan`}
+                  placeholder={`Select restaurant or enter ${mealType} plan`}
                 />
-                {localWeeklyPlan[day.toLowerCase()] &&
-                  localWeeklyPlan[day.toLowerCase()][mealType] && (
-                    <button
-                      onClick={() => handleRemoveWeeklyMeal(day, mealType)}
-                      className={styles.removeButton}
-                      aria-label={`Remove ${mealType} plan for ${day}`}
-                    >
-                      Remove
-                    </button>
-                  )}
               </div>
             ))}
           </div>
         ))}
 
-        <div className={styles.buttonRow}>
+        {/* Button to update and send the weekly meal plan data to Firebase */}
+        <div className={styles.saveButtonContainer}>
           <button className={styles.saveButton} onClick={saveWeeklyMealPlanToFirebase}>
             Save Weekly Meal Plan
-          </button>
-          <button className={styles.removeAllButton} onClick={handleRemoveAllWeeklyMeals}>
-            Remove All
           </button>
         </div>
       </div>

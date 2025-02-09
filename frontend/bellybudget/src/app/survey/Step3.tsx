@@ -1,23 +1,44 @@
-import styles from "./survey.module.css"
+"use client";
 
-const Step3 = ({ formData, setFormData, handleNext, handleBack }) => {
-  const handleChange = (e) => {
-    const value = e.target.value
+import React from "react";
+import styles from "./survey.module.css";
+
+// Define the structure of the survey data (should match your other Step components)
+interface SurveyData {
+  dietaryRestrictions: string;
+  mealsPerDay: string;
+  cuisinePreferences: string[];
+  diningPreference: string;
+  allergies: string[];
+  weeklyBudget: string;
+}
+
+// Define the props for Step3
+interface Step3Props {
+  formData: SurveyData;
+  setFormData: React.Dispatch<React.SetStateAction<SurveyData>>;
+  handleNext: () => void;
+  handleBack: () => void;
+}
+
+const Step3: React.FC<Step3Props> = ({ formData, setFormData, handleNext, handleBack }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
     setFormData((prev) => ({
       ...prev,
       cuisinePreferences: prev.cuisinePreferences.includes(value)
         ? prev.cuisinePreferences.filter((item) => item !== value)
         : [...prev.cuisinePreferences, value],
-    }))
-  }
+    }));
+  };
 
   const handleNextStep = () => {
     if (formData.cuisinePreferences.length === 0) {
-      alert("Please select at least one cuisine preference before proceeding.")
-      return
+      alert("Please select at least one cuisine preference before proceeding.");
+      return;
     }
-    handleNext()
-  }
+    handleNext();
+  };
 
   const cuisines = [
     "Italian",
@@ -40,7 +61,7 @@ const Step3 = ({ formData, setFormData, handleNext, handleBack }) => {
     "German",
     "Turkish",
     "Lebanese",
-  ]
+  ];
 
   return (
     <div>
@@ -67,7 +88,7 @@ const Step3 = ({ formData, setFormData, handleNext, handleBack }) => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Step3
+export default Step3;

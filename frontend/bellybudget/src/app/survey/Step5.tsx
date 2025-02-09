@@ -1,60 +1,80 @@
-import styles from "./survey.module.css"
+"use client";
 
-const Step5 = ({ formData, setFormData, handleNext, handleBack }) => {
-  const handleChange = (e) => {
-    const value = e.target.value
-    setFormData((prev) => ({
-      ...prev,
-      allergies: prev.allergies.includes(value)
-        ? prev.allergies.filter((item) => item !== value)
-        : [...prev.allergies, value],
-    }))
-  }
+import React from "react";
+import styles from "./survey.module.css";
 
+// Define the structure of your survey data
+interface SurveyData {
+  dietaryRestrictions: string;
+  mealsPerDay: string;
+  cuisinePreferences: string[];
+  diningPreference: string;
+  allergies: string[];
+  weeklyBudget: string;
+}
+
+// Define the props for Step5
+interface Step5Props {
+  formData: SurveyData;
+  setFormData: React.Dispatch<React.SetStateAction<SurveyData>>;
+  handleNext: () => void;
+  handleBack: () => void;
+}
+
+const Step5: React.FC<Step5Props> = ({ formData, setFormData, handleNext, handleBack }) => {
+  // Handle "No Allergies" button click
   const handleNoneClick = () => {
     setFormData((prev) => ({
       ...prev,
-      allergies: ["none"]
-    }))
-  }
+      allergies: ["none"],
+    }));
+  };
 
-  const handleAllergiesChange = (value) => {
+  // Handle changes for allergy checkboxes
+  const handleAllergiesChange = (value: string) => {
     if (value === "none") {
       // If "none" is clicked, clear all other selections
       setFormData((prev) => ({
         ...prev,
-        allergies: ["none"]
-      }))
+        allergies: ["none"],
+      }));
     } else {
       // If any other allergy is selected, remove "none" if it exists
       setFormData((prev) => ({
         ...prev,
         allergies: prev.allergies
-          .filter(item => item !== "none")
-          .concat(prev.allergies.includes(value) 
-            ? [] 
-            : [value])
-      }))
+          .filter((item) => item !== "none")
+          .concat(prev.allergies.includes(value) ? [] : [value]),
+      }));
     }
-  }
+  };
 
   const handleNextStep = () => {
     if (formData.allergies.length === 0) {
-      alert("Please select at least one option or click 'None'")
-      return
+      alert("Please select at least one option or click 'No Allergies'");
+      return;
     }
-    handleNext()
-  }
+    handleNext();
+  };
 
-  const commonAllergies = ["Peanuts", "Tree Nuts", "Milk", "Eggs", "Fish", "Shellfish", "Soy", "Wheat"]
+  const commonAllergies = [
+    "Peanuts",
+    "Tree Nuts",
+    "Milk",
+    "Eggs",
+    "Fish",
+    "Shellfish",
+    "Soy",
+    "Wheat",
+  ];
 
   return (
     <div>
       <h2>Allergies</h2>
       <div className={styles.checkboxGroup}>
         {commonAllergies.map((allergy) => (
-          <label 
-            key={allergy} 
+          <label
+            key={allergy}
             className={`${styles.checkboxLabel} ${
               formData.allergies.includes("none") ? styles.disabled : ""
             }`}
@@ -70,14 +90,14 @@ const Step5 = ({ formData, setFormData, handleNext, handleBack }) => {
           </label>
         ))}
       </div>
-      
-      {/* None button */}
+
+      {/* "No Allergies" button */}
       <button
         className={`${styles.noneButton} ${
           formData.allergies.includes("none") ? styles.activeNone : ""
         }`}
         onClick={handleNoneClick}
-        style={{ 
+        style={{
           margin: "2rem auto",
           padding: "0.5rem 2rem",
           borderRadius: "20px",
@@ -85,7 +105,7 @@ const Step5 = ({ formData, setFormData, handleNext, handleBack }) => {
           background: formData.allergies.includes("none") ? "#3498db" : "transparent",
           color: formData.allergies.includes("none") ? "white" : "#3498db",
           cursor: "pointer",
-          display: "block"
+          display: "block",
         }}
       >
         No Allergies
@@ -100,7 +120,7 @@ const Step5 = ({ formData, setFormData, handleNext, handleBack }) => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Step5
+export default Step5;

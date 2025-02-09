@@ -10,19 +10,30 @@ import Step3 from "./Step3";
 import Step4 from "./Step4";
 import Step5 from "./Step5";
 import Step6 from "./Step6";
-import { insertMealPlan } from "@/lib/firebase"; // This now uses your new API-backed function
+import { insertMealPlan } from "@/lib/firebase";
 import styles from "./survey.module.css";
+import { User } from "firebase/auth";
 
-const Survey = () => {
+// Define the structure of your survey form data
+interface SurveyData {
+  dietaryRestrictions: string;
+  mealsPerDay: string;
+  cuisinePreferences: string[];
+  diningPreference: string;
+  allergies: string[];
+  weeklyBudget: string;
+}
+
+const Survey: React.FC = () => {
   const router = useRouter();
 
   // Manage survey steps and form data
-  const [step, setStep] = useState(0);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [step, setStep] = useState<number>(0);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SurveyData>({
     dietaryRestrictions: "",
     mealsPerDay: "",
     cuisinePreferences: [],
@@ -32,8 +43,8 @@ const Survey = () => {
   });
 
   // New state for showing the modal and tracking the meal plan insertion
-  const [showMealPlanModal, setShowMealPlanModal] = useState(false);
-  const [mealPlanLoading, setMealPlanLoading] = useState(false);
+  const [showMealPlanModal, setShowMealPlanModal] = useState<boolean>(false);
+  const [mealPlanLoading, setMealPlanLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -48,8 +59,9 @@ const Survey = () => {
         const userDoc = await getDoc(doc(db, "users", currentUser.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
+          // If surveyData exists, cast it to SurveyData before updating state
           if (userData.surveyData) {
-            setFormData(userData.surveyData);
+            setFormData(userData.surveyData as SurveyData);
           }
         }
       } catch (err) {
@@ -66,11 +78,11 @@ const Survey = () => {
   const handleNext = () => setStep((prev) => prev + 1);
   const handleBack = () => setStep((prev) => prev - 1);
 
-  const validateFormData = (data) => {
+  const validateFormData = (data: SurveyData): boolean => {
     return (
-      data.mealsPerDay &&
+      data.mealsPerDay !== "" &&
       data.cuisinePreferences.length > 0 &&
-      data.diningPreference &&
+      data.diningPreference !== "" &&
       (data.allergies.length > 0 || data.allergies.includes("none")) &&
       Number(data.weeklyBudget) >= 50
     );
@@ -84,8 +96,7 @@ const Survey = () => {
 
     try {
       setLoading(true);
-      const isValid = validateFormData(formData);
-      if (!isValid) {
+      if (!validateFormData(formData)) {
         throw new Error("Please complete all required fields");
       }
 
@@ -171,7 +182,8 @@ const Survey = () => {
                   manage your budget, and explore delicious dining experiences.
                 </p>
                 <p>
-                  Please take a moment to read about what BellyBudget is all about. When you're ready, click the "Next" button to begin our short survey.
+                  Please take a moment to read about what BellyBudget is all about. When you're ready,
+                  click the "Next" button to begin our short survey.
                 </p>
                 <button className={styles.nextButton} onClick={handleNext}>
                   Next
@@ -179,22 +191,51 @@ const Survey = () => {
               </div>
             )}
             {step === 1 && (
-              <Step1 formData={formData} setFormData={setFormData} handleNext={handleNext} />
+              <Step1
+                formData={formData}
+                setFormData={setFormData}
+                handleNext={handleNext}
+              />
             )}
             {step === 2 && (
-              <Step2 formData={formData} setFormData={setFormData} handleNext={handleNext} handleBack={handleBack} />
+              <Step2
+                formData={formData}
+                setFormData={setFormData}
+                handleNext={handleNext}
+                handleBack={handleBack}
+              />
             )}
             {step === 3 && (
-              <Step3 formData={formData} setFormData={setFormData} handleNext={handleNext} handleBack={handleBack} />
+              <Step3
+                formData={formData}
+                setFormData={setFormData}
+                handleNext={handleNext}
+                handleBack={handleBack}
+              />
             )}
             {step === 4 && (
-              <Step4 formData={formData} setFormData={setFormData} handleNext={handleNext} handleBack={handleBack} />
+              <Step4
+                formData={formData}
+                setFormData={setFormData}
+                handleNext={handleNext}
+                handleBack={handleBack}
+              />
             )}
             {step === 5 && (
-              <Step5 formData={formData} setFormData={setFormData} handleNext={handleNext} handleBack={handleBack} />
+              <Step5
+                formData={formData}
+                setFormData={setFormData}
+                handleNext={handleNext}
+                handleBack={handleBack}
+              />
             )}
             {step === 6 && (
-              <Step6 formData={formData} setFormData={setFormData} handleBack={handleBack} handleSubmit={handleSubmit} />
+              <Step6
+                formData={formData}
+                setFormData={setFormData}
+                handleBack={handleBack}
+                handleSubmit={handleSubmit}
+              />
             )}
           </div>
         </div>

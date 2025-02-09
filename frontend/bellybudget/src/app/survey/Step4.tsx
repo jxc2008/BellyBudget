@@ -1,9 +1,28 @@
 "use client";
 
+import React from "react";
 import styles from "./survey.module.css";
 
-const Step4 = ({ formData, setFormData, handleNext, handleBack }) => {
-  const handleChange = (e) => {
+// Define the structure of your survey data
+interface SurveyData {
+  dietaryRestrictions: string;
+  mealsPerDay: string;
+  cuisinePreferences: string[];
+  diningPreference: string;
+  allergies: string[];
+  weeklyBudget: string;
+}
+
+// Define the props for Step4
+interface Step4Props {
+  formData: SurveyData;
+  setFormData: React.Dispatch<React.SetStateAction<SurveyData>>;
+  handleNext: () => void;
+  handleBack: () => void;
+}
+
+const Step4: React.FC<Step4Props> = ({ formData, setFormData, handleNext, handleBack }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormData({ ...formData, diningPreference: e.target.value });
   };
 
