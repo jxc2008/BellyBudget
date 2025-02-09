@@ -28,7 +28,7 @@ async function getCoordinates(address: string) {
   }
 }
 
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+const GOOGLE_MAPS_API_KEY = 'AIzaSyCGO7WbghY0CTDElvwYbWqZdKLXi_61qu4';
 
 const priceMapping: { [key: number]: number } = {
   1: 10,
