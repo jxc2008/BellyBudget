@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
 
-// Your Firebase Config (Replace with the values from your Firebase Console)
 const firebaseConfig = {
   apiKey: "AIzaSyBrDqhH-CleIEm7Dc10Ea1Box_UzIIGXfs",
   authDomain: "belly-budget-bca30.firebaseapp.com",
@@ -12,6 +12,17 @@ const firebaseConfig = {
   measurementId: "G-TW0KZJF15Z",
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const db = getFirestore(app);
+
+console.log("✅ Firebase Initialized:", app.name);
+console.log("🔥 Firestore Project ID:", db.app.options.projectId);
+
+// **Enable Firestore Network**
+import { enableNetwork } from "firebase/firestore";
+enableNetwork(db)
+  .then(() => console.log("✅ Firestore network enabled"))
+  .catch((err) => console.error("❌ Firestore network error:", err));
+
+export { app };
