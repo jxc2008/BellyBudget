@@ -49,4 +49,4 @@ async function deleteItAll() {
     }
 }
 
-createCustomer('Eshaan', 'Saxena');
+getCustomer();

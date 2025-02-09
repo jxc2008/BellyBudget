@@ -7,4 +7,5 @@ module.exports = {
   NESSIE_BASE_URL: process.env.NESSIE_BASE_URL || 'https://api.nessie.com/v1',
   PORT: process.env.PORT || 3000,
   PLACE: process.env.PLACE,
+  PLAID: process.env.PLAID
 };
