@@ -1,7 +1,7 @@
 BellyBudget
 ===========
 
-BellyBudget is a personalized meal planning and budgeting web app that helps you plan meals, manage your food budget, and discover dining experiences tailored just for you! Check it out at bellybudget.nyc
+BellyBudget is a personalized meal planning and budgeting web app that helps you plan meals, manage your food budget, and discover dining experiences tailored just for you! Check it out at https://bellybudget.nyc
 
 Survey & Preferences
 --------------------
