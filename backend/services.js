@@ -11,12 +11,12 @@ const DATABASE_NAME = "HackNYU";
 const COLLECTION_NAME = "Restaurants";
 
 
-async function findNearbyRestaurants(lat, lng, radius) {
+async function findNearbyRestaurants(lat, lng, radius, budget, n) {
   try {
     console.log("🔄 Fetching restaurants from Google API...");
 
     const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=40.75,-73.98&radius=2000&type=restaurant&key=AIzaSyDxHRAT9nQjGafq0G65vhpYne0Krf2oJA8`
+      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=restaurant&key=AIzaSyDxHRAT9nQjGafq0G65vhpYne0Krf2oJA8`
     );
 
     if (!response.data || !response.data.results || response.data.results.length === 0) {
@@ -35,7 +35,7 @@ async function findNearbyRestaurants(lat, lng, radius) {
     }));
 
     console.log(`📌 Fetched ${resultList.length} restaurants.`);
-
+    const avgBudget = budget / (7*n);
     if (resultList.length === 0) {
       console.error("❌ Error: No valid restaurant data to process.");
       return [];
@@ -48,68 +48,61 @@ async function findNearbyRestaurants(lat, lng, radius) {
         Math.log(1 + parseInt(restaurant.user_ratings_total));
     });
 
-    // Sort by score and pick the top 10
-    resultList = resultList.sort((a, b) => b.score - a.score).slice(0, 10);
+    
+    resultList = resultList.sort((a, b) => b.score - a.score);
 
-    console.log("📌 Final Top 10 Restaurants:", resultList);
+    return selectRestaurants(resultList, 7*n, budget); 
+}
+catch(error){
+  console.log("error");
+}
+}
+export default { findNearbyRestaurants };
 
-    // Optionally, store the fetched restaurants in MongoDB
-    // await storeRestaurants(resultList);
 
-    return resultList; // Return the top 10 restaurants
-  } catch (error) {
-    console.error("❌ Error fetching restaurants:", error);
-    return [];
+function selectRestaurants(restaurants, targetCount, totalBudget) {
+  // Specific estimated costs for price levels
+  const priceEstimates = {
+    0: 5,   
+    1: 10,  
+    2: 20,  
+    3: 35,  
+    4: 60,  
+    5: 100  
+  };
+
+
+  restaurants.forEach(restaurant => {
+    const priceLevel = restaurant.price_level || 0;
+    restaurant.estimated_cost = priceEstimates[priceLevel] || 25;
+  });
+
+
+  const scoreSortedRestaurants = [...restaurants].sort((a, b) => b.score - a.score);
+  let selected = [];
+  let remainingBudget = totalBudget;
+
+
+  for (const restaurant of scoreSortedRestaurants) {
+    if (selected.length >= targetCount) break;
+    
+    if (restaurant.estimated_cost <= remainingBudget) {
+      selected.push(restaurant);
+      remainingBudget -= restaurant.estimated_cost;
+    }
   }
+  
+  if (selected.length < targetCount) {
+    const cheapSortedRestaurants = [...restaurants]
+      .filter(r => !selected.includes(r))
+      .sort((a, b) => a.estimated_cost - b.estimated_cost);
+
+    for (const restaurant of cheapSortedRestaurants) {
+      if (selected.length >= targetCount) break;
+      remainingBudget -= restaurant.estimated_cost;
+      selected.push(restaurant);
+    }
+  }
+  return selected;
 }
 
-// Store the restaurant data in MongoDB
-async function storeRestaurants(restaurants) {
-  if (!MONGODB_URI) {
-    console.error("MongoDB URI is missing. Check your .env file.");
-    return;
-  }
-
-  const client = new MongoClient(MONGODB_URI, { tls: true });
-
-  try {
-    await client.connect();
-    const db = client.db(DATABASE_NAME);
-    const collection = db.collection(COLLECTION_NAME);
-
-    console.log("📌 Data being stored in MongoDB:", restaurants);
-    if (!Array.isArray(restaurants) || restaurants.length === 0) {
-      console.error("❌ Error: restaurants is not a valid array!");
-      return;
-    }
-
-    for (const restaurant of restaurants) {
-      // Check if the restaurant already exists by `name + vicinity`
-      const existingRestaurant = await collection.findOne({
-        name: restaurant.name,
-        vicinity: restaurant.vicinity,
-      });
-
-      if (existingRestaurant) {
-        console.log(`🔄 Skipping duplicate: ${restaurant.name} (${restaurant.vicinity})`);
-      } else {
-        // Insert only if it does not exist
-        await collection.insertOne(restaurant);
-        console.log(`✅ Inserted: ${restaurant.name} (${restaurant.vicinity})`);
-      }
-    }
-  } catch (error) {
-    console.error("❌ MongoDB Error:", error);
-  } finally {
-    await client.close();
-  }
-}
-// Test function call
-const restaurants = await findNearbyRestaurants(40.75, -73.98, 1000);
-console.log ("📌 Final Restaurants Output:", restaurants); 
-
-const app = express();
-
-
-
-export default{ findNearbyRestaurants };
