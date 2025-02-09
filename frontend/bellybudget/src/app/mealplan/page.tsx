@@ -5,12 +5,19 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../page.module.css"; // Reuse styles from home page
 
+// Define the type for a meal
+interface Meal {
+  name: string;
+  price: number;
+}
+
 export default function MealPlan() {
   const searchParams = useSearchParams();
   const budget = searchParams.get("budget");
   const mealsPerDay = searchParams.get("mealsPerDay");
 
-  const [meals, setMeals] = useState([]);
+  // Explicitly type the meals state as an array of Meal objects
+  const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,11 +40,15 @@ export default function MealPlan() {
       <h1 className={styles.heading}>Your Meal Plan</h1>
       <p>Budget: ${budget}, Meals per day: {mealsPerDay}</p>
       
-      {loading ? <p>Loading...</p> : meals.map((meal, index) => (
-        <div key={index} className={styles.mealItem}>
-          {meal.name} - ${meal.price}
-        </div>
-      ))}
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        meals.map((meal, index) => (
+          <div key={index} className={styles.mealItem}>
+            {meal.name} - ${meal.price}
+          </div>
+        ))
+      )}
     </div>
   );
 }
