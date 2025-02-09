@@ -1,15 +1,14 @@
-// calendar.tsx
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Utensils } from "lucide-react";
-import { db, auth, subscribeToMealPlan, updateMealPlan } from "@/lib/firebase";
-import { doc, onSnapshot, deleteField, updateDoc } from "firebase/firestore";
+import { db, auth, subscribeToMealPlan } from "@/lib/firebase";
+import { doc, onSnapshot } from "firebase/firestore";
 import styles from "./Calendar.module.css";
 
 // Define interfaces for meal and restaurant plans
 interface MealPlan {
-  breakfast: any;
+  breakfast: any; // Updated to allow string or object
   lunch: any;
   dinner: any;
 }
@@ -34,6 +33,7 @@ interface RestaurantPlans {
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
+  // Local state to hold meal plan data from Firebase
   const [weeklyMealPlan, setWeeklyMealPlan] = useState<WeeklyPlan>({});
   const [restaurantPlans, setRestaurantPlans] = useState<RestaurantPlans>({});
 
@@ -62,6 +62,7 @@ const Calendar = () => {
 
   /**
    * Compute the next occurrence date (as an ISO string) for each weekday that has a meal plan.
+   * For example, if the plan has a key "monday", we compute the next Monday (including today if it is Monday).
    */
   const nextMealPlanOccurrence = useMemo(() => {
     const today = new Date();
@@ -76,13 +77,17 @@ const Calendar = () => {
     ];
     const result: { [weekday: string]: string } = {};
 
+    // Loop over each weekday key in the weekly meal plan.
     Object.entries(weeklyMealPlan).forEach(([weekday, mealPlan]) => {
+      // Only compute a next occurrence if there is at least one meal planned.
       if (mealPlan.breakfast || mealPlan.lunch || mealPlan.dinner) {
         const targetIndex = daysOfWeek.indexOf(weekday);
         const fromIndex = today.getDay();
+        // Calculate how many days until the next occurrence (0 means today)
         const delta = (targetIndex - fromIndex + 7) % 7;
         const nextDate = new Date(today);
         nextDate.setDate(today.getDate() + delta);
+        // Store in ISO date format (YYYY-MM-DD)
         result[weekday] = nextDate.toISOString().split("T")[0];
       }
     });
@@ -91,11 +96,15 @@ const Calendar = () => {
   }, [weeklyMealPlan]);
 
   /**
-   * Returns the meal plan for a given date (only if it is the “next occurrence” for that weekday).
+   * Get the meal plan for a specific date.
+   * Only return the plan if the given date is the computed "next" occurrence for that weekday.
+   * Otherwise, return an empty plan so that only one cell (the nearest future occurrence) displays the meals.
    */
   const getMealPlan = useCallback(
     (date: Date): MealPlan => {
-      const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+      const dayOfWeek = date
+        .toLocaleDateString("en-US", { weekday: "long" })
+        .toLowerCase();
       const dateString = date.toISOString().split("T")[0];
       if (weeklyMealPlan[dayOfWeek] && nextMealPlanOccurrence[dayOfWeek] === dateString) {
         return weeklyMealPlan[dayOfWeek];
@@ -105,9 +114,7 @@ const Calendar = () => {
     [weeklyMealPlan, nextMealPlanOccurrence]
   );
 
-  /**
-   * Returns the restaurant plan for a specific date.
-   */
+  // Get restaurant plan for a specific date (no change needed for these date‐specific events)
   const getRestaurantPlan = useCallback(
     (date: Date): RestaurantPlan | null => {
       const dateString = date.toISOString().split("T")[0];
@@ -116,16 +123,28 @@ const Calendar = () => {
     [restaurantPlans]
   );
 
-  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  const firstDayOfMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    1
+  );
   const startingDay = firstDayOfMonth.getDay();
-  const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+  const daysInMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1,
+    0
+  ).getDate();
 
   const previousMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1)
+    );
   };
 
   const nextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1)
+    );
   };
 
   const generateCalendarDays = useCallback(() => {
@@ -141,9 +160,14 @@ const Calendar = () => {
 
     // Create cells for each day of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+      const date = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        day
+      );
       const isToday = date.toDateString() === today.toDateString();
       const isSelected = date.toDateString() === selectedDate.toDateString();
+      // Only one day (the nearest future occurrence for that weekday) will have a non-empty plan.
       const mealPlan = getMealPlan(date);
       const restaurantPlan = getRestaurantPlan(date);
       const hasMeals = mealPlan.breakfast || mealPlan.lunch || mealPlan.dinner;
@@ -211,41 +235,27 @@ const Calendar = () => {
     getRestaurantPlan,
   ]);
 
-  // Remove the restaurant plan for the selected date
-  const handleRemoveRestaurant = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-    const planRef = doc(db, "users", user.uid, "restaurantPlans", "calendar");
-    const dateKey = selectedDate.toISOString().split("T")[0];
-    try {
-      await updateDoc(planRef, { [dateKey]: deleteField() });
-      console.log("Restaurant plan removed successfully");
-    } catch (error) {
-      console.error("Error removing restaurant plan:", error);
-    }
-  };
-
-  // Remove a meal (breakfast, lunch, or dinner) for the selected date
-  const handleRemoveMeal = async (meal: string) => {
-    const dayKey = selectedDate.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
-    try {
-      await updateMealPlan(dayKey, meal, "");
-      console.log(`${meal} removed successfully`);
-    } catch (error) {
-      console.error(`Error removing ${meal}:`, error);
-    }
-  };
-
   return (
     <div className={styles.calendarContainer}>
       <div className={styles.calendarHeader}>
-        <button onClick={previousMonth} className={styles.navigationButton} aria-label="Previous month">
+        <button
+          onClick={previousMonth}
+          className={styles.navigationButton}
+          aria-label="Previous month"
+        >
           <ChevronLeft size={20} />
         </button>
         <h2 className={styles.monthYear}>
-          {currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+          {currentDate.toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+          })}
         </h2>
-        <button onClick={nextMonth} className={styles.navigationButton} aria-label="Next month">
+        <button
+          onClick={nextMonth}
+          className={styles.navigationButton}
+          aria-label="Next month"
+        >
           <ChevronRight size={20} />
         </button>
       </div>
@@ -272,7 +282,7 @@ const Calendar = () => {
             })}
           </h3>
           <div className={styles.mealsList}>
-            {["breakfast", "lunch", "dinner"].map((meal) => {
+            {(["breakfast", "lunch", "dinner"] as (keyof MealPlan)[]).map((meal) => {
               const plan = getMealPlan(selectedDate)[meal];
               let displayPlan = "No meal planned";
               if (plan) {
@@ -288,34 +298,18 @@ const Calendar = () => {
                     {meal.charAt(0).toUpperCase() + meal.slice(1)}
                   </span>
                   <span className={styles.mealPlan}>{displayPlan}</span>
-                  {plan && plan !== "" && (
-                    <button
-                      onClick={() => handleRemoveMeal(meal)}
-                      className={styles.removeButton}
-                      aria-label={`Remove ${meal} plan`}
-                    >
-                      Remove
-                    </button>
-                  )}
                 </div>
               );
             })}
             {getRestaurantPlan(selectedDate) && (
               <div className={`${styles.mealItem} ${styles.restaurantItem}`}>
-                <div className={styles.restaurantHeader}>
-                  <span className={styles.mealType}>Restaurant</span>
-                  <button
-                    onClick={handleRemoveRestaurant}
-                    className={styles.removeButton}
-                    aria-label="Remove restaurant plan"
-                  >
-                    Remove
-                  </button>
-                </div>
+                <span className={styles.mealType}>Restaurant</span>
                 <span className={styles.mealPlan}>
-                  {getRestaurantPlan(selectedDate)?.restaurantName} at {getRestaurantPlan(selectedDate)?.time}
+                  {getRestaurantPlan(selectedDate)?.restaurantName} at{" "}
+                  {getRestaurantPlan(selectedDate)?.time}
                   <div className={styles.restaurantCost}>
-                    Estimated cost: ${getRestaurantPlan(selectedDate)?.estimatedCost.toFixed(2)}
+                    Estimated cost: $
+                    {getRestaurantPlan(selectedDate)?.estimatedCost.toFixed(2)}
                   </div>
                 </span>
               </div>
