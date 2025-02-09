@@ -1,5 +1,5 @@
 // models.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const RestaurantSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -34,7 +34,7 @@ const BudgetSchema = new mongoose.Schema({
 const Budget = mongoose.model('Budget', BudgetSchema);
 
 // Export models for use in other files
-module.exports = {
+export default {
   Restaurant,
   User,
   Budget

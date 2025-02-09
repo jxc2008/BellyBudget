@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
 import dotenv from "dotenv";
+import services from "./services.js"
 dotenv.config();// Load environment variables
 
 const app = express();
@@ -72,5 +73,10 @@ app.get('/transactions', async (req, res) => {
   }
 });
 
+app.get('/restaurants', async (req, res) => {
+  const jsonData = await services.findNearbyRestaurants(40.75, -73.98, 1000);
+  res.json(jsonData);
+});
 
+app.listen(3001, () => console.log('Server running on port 3001'));
 // Start the Express server
