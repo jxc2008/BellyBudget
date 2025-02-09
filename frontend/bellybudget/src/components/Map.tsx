@@ -10,7 +10,7 @@ const GEOAPIFY_API_KEY = process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY
 
 async function getCoordinates(address: string) {
   const encodedAddress = encodeURIComponent(address)
-  const url = `https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&apiKey=9182062136cc42f39ecfd41ada924841`
+  const url = `https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&apiKey=${GEOAPIFY_API_KEY}`
   try {
     const response = await axios.get(url)
     const results = response.data.features
@@ -28,7 +28,7 @@ async function getCoordinates(address: string) {
   }
 }
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyCGO7WbghY0CTDElvwYbWqZdKLXi_61qu4';
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
 const priceMapping: { [key: number]: number } = {
   1: 10,
@@ -63,7 +63,7 @@ export default function Map() {
         setMap(newMap)
         console.log("Map Object:", newMap) // Debugging
 
-        const response = await axios.get("http://localhost:3001/restaurants")
+        const response = await axios.get("http://localhost:3001")
         const restaurants = response.data
 
         for (const restaurant of restaurants) {

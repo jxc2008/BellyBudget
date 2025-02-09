@@ -92,6 +92,26 @@
   transform: scale(1.5);
 }
 
+.currentTimeIndicator {
+  position: absolute;
+  right: 0;
+  width: 100%;
+  height: 2px;
+  background-color: red;
+  z-index: 10;
+}
+
+/* Restaurant indicator style */
+.restaurantIndicator {
+  position: absolute;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  background-color: #e11d48;
+  border-radius: 50%;
+  z-index: 20;
+}
+
 .timelineContent {
   position: absolute;
   left: 10px;
@@ -111,15 +131,6 @@
 .timeline.expanded .timelineContent {
   opacity: 1;
   transform: translateX(0);
-}
-
-.currentTimeIndicator {
-  position: absolute;
-  right: 0;
-  width: 100%;
-  height: 2px;
-  background-color: red;
-  z-index: 10;
 }
 
 @media (max-width: 768px) {
@@ -144,4 +155,3 @@
     width: 20px;
   }
 }
-

@@ -12,7 +12,6 @@ import {
   getAuth,
   onAuthStateChanged
 } from "firebase/auth";
-// import { auth, db } from "./firebase"; // Ensure correct Firebase import
 
 // Your Firebase configuration (replace with your actual config values)
 const firebaseConfig = {
