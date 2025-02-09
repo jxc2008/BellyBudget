@@ -1,27 +1,17 @@
 // app.js
 import express from 'express';
-import mongoose from 'mongoose';
-import config from './config.js';
+import config from './config.js'; // Use this for any other configuration if needed
 
 const app = express();
 
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// Use the API routes defined in routes.js (all prefixed with /api)
+// Set up your API routes here (e.g., app.use('/api', yourRoutes))
+// Example: app.use('/api', routes);
 
-
-// Connect to MongoDB Atlas
-mongoose
-  .connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Connected to MongoDB Atlas');
-
-    // Start the server only after a successful DB connection
-    app.listen(2000, () => {
-      console.log(`Server is running on port ${2000}`);
-    });
-  })
-  .catch(err => {
-    console.error('Error connecting to MongoDB:', err);
-  });
+// Start the server
+const PORT = process.env.PORT || 2000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
