@@ -13,13 +13,6 @@ interface Restaurant {
   estimated_cost?: number;
 }
 
-// Define an interface for the restaurant event object.
-interface RestaurantEvent {
-  name: string;
-  rating: number;
-  estimated_cost: number;
-}
-
 // Define the props interface for RestaurantDetails.
 interface RestaurantDetailsProps {
   restaurant: Restaurant;
@@ -37,15 +30,8 @@ const RestaurantDetails: React.FC<RestaurantDetailsProps> = ({ restaurant, onClo
   };
 
   const handleAddToCalendar = () => {
-    // Create a restaurant event object with details you want stored.
-    const restaurantEvent: RestaurantEvent = {
-      name: restaurant.name,
-      rating: restaurant.rating || 0,
-      estimated_cost: restaurant.estimated_cost || Number(restaurant.price) || 0,
-    };
-
-    // Update the meal plan using the Firebase function.
-    updateMealPlan(selectedDay, selectedMeal, restaurantEvent);
+    // Instead of passing an object, pass just the restaurant's name (a string).
+    updateMealPlan(selectedDay, selectedMeal, restaurant.name);
     handleClose();
   };
 
