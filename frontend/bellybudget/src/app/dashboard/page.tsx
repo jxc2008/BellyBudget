@@ -66,7 +66,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await fetch("http://localhost:4000/transactions");
+        const response = await fetch("http://localhost:3001/transactions");
         if (!response.ok) {
           throw new Error("Failed to fetch transactions");
         }
@@ -240,7 +240,7 @@ export default function Dashboard() {
                       <div className={styles.transactionInfo}>
                         <div className={styles.transactionIcon}>
                           {isFoodRelated(transaction.name) ? (
-                            <FastFood size={20} color="#FF5733" />
+                            <Pizza size={20} color="#FF5733" />
                           ) : (
                             <ShoppingBag size={20} color="#64748b" />
                           )}
