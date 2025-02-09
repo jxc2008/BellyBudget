@@ -264,9 +264,9 @@
   /* =========================
      Dark Mode Overrides (for sections other than Budget & Profile)
      ========================= */
-    .dashboard :global(body.dark) {
-        background-color: #1a202c;
-        color: #cbd5e0;
+  .dashboard :global(body.dark) {
+    background-color: #1a202c;
+    color: #cbd5e0;
     }    
   :global(body.dark) .container {
     background-color: #1a202c;
