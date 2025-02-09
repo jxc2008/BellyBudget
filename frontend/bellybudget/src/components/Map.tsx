@@ -4,6 +4,30 @@ import { useEffect, useRef, useState } from "react"
 import { Loader } from "@googlemaps/js-api-loader"
 import RestaurantDetails from "./RestaurantDetails"
 import styles from "./Map.module.css"
+import axios from "axios"
+
+const GEOAPIFY_API_KEY = "9182062136cc42f39ecfd41ada924841"
+
+async function getCoordinates(address: string) {
+  const encodedAddress = encodeURIComponent(address)
+  const url = `https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&apiKey=${GEOAPIFY_API_KEY}`
+
+  try {
+    const response = await axios.get(url)
+    const results = response.data.features
+
+    if (results.length > 0) {
+      const [lon, lat] = results[0].geometry.coordinates // Note the order: [longitude, latitude]
+      return { lat, lng: lon } // Return as {lat, lng} for Google Maps
+    } else {
+      console.error("No results found for address:", address)
+      return null
+    }
+  } catch (error) {
+    console.error("Error fetching coordinates:", error)
+    return null
+  }
+}
 
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
@@ -13,67 +37,54 @@ export default function Map() {
   const [selectedRestaurant, setSelectedRestaurant] = useState(null)
 
   useEffect(() => {
-    const loader = new Loader({
-      apiKey: GOOGLE_MAPS_API_KEY,
-      version: "weekly",
-    })
-
-    loader.load().then(() => {
-      const mapOptions = {
-        center: { lat: 40.7128, lng: -74.006 },
-        zoom: 13,
-        styles: [], // Removed the grayscale styles to show default colored map
-        disableDefaultUI: true,
-        zoomControl: true, // Added zoom control
-        mapTypeControl: false,
-        scaleControl: false,
-        streetViewControl: false,
-        rotateControl: false,
-        fullscreenControl: false,
-        keyboardShortcuts: false,
-      }
-
-      const newMap = new google.maps.Map(mapRef.current, mapOptions)
-      setMap(newMap)
-
-      // Hide the Google Maps attribution
-      const removeGoogleLabels = () => {
-        const labels = document.getElementsByClassName("gmnoprint")
-        for (let i = 0; i < labels.length; i++) {
-          labels[i].style.display = "none"
-        }
-        const googleLink = document.getElementsByClassName("gm-style-cc")
-        for (let i = 0; i < googleLink.length; i++) {
-          googleLink[i].style.display = "none"
-        }
-        const googleLogo = document.querySelector('a[href^="https://maps.google.com/maps"]')
-        if (googleLogo) {
-          googleLogo.style.display = "none"
-        }
-      }
-
-      // Call the function to remove labels after a short delay to ensure the map has loaded
-      setTimeout(removeGoogleLabels, 100)
-
-      // Add markers for restaurants (mock data)
-      const restaurants = [
-        { id: 1, name: "Restaurant A", lat: 40.7128, lng: -74.006, price: 15 },
-        { id: 2, name: "Restaurant B", lat: 40.7158, lng: -74.009, price: 25 },
-        // Add more restaurants...
-      ]
-
-      restaurants.forEach((restaurant) => {
-        const marker = new google.maps.Marker({
-          position: { lat: restaurant.lat, lng: restaurant.lng },
-          map: newMap,
-          title: restaurant.name,
-        })
-
-        marker.addListener("click", () => {
-          setSelectedRestaurant(restaurant)
-        })
+    const loadMap = async () => {
+      const loader = new Loader({
+        apiKey: GOOGLE_MAPS_API_KEY,
+        version: "weekly",
       })
-    })
+
+      try {
+        const google = await loader.load()
+        const mapOptions = {
+          center: { lat: 40.7128, lng: -74.006 },
+          zoom: 13,
+          disableDefaultUI: true,
+          zoomControl: true,
+        }
+
+        const newMap = new google.maps.Map(mapRef.current, mapOptions)
+        setMap(newMap)
+        console.log("Map Object:", newMap) // Debugging
+
+        const response = await axios.get("http://localhost:3001/restaurants")
+        const restaurants = response.data
+
+        for (const restaurant of restaurants) {
+          const address = restaurant.vicinity
+          const coordinates = await getCoordinates(address)
+
+          if (coordinates) {
+            console.log(`Coordinates for ${restaurant.name}:`, coordinates) // Debugging
+
+            const marker = new google.maps.Marker({
+              position: coordinates,
+              map: newMap,
+              title: restaurant.name,
+            })
+
+            marker.addListener("click", () => {
+              setSelectedRestaurant(restaurant)
+            })
+          } else {
+            console.error(`Failed to get coordinates for: ${address}`)
+          }
+        }
+      } catch (error) {
+        console.error("Error loading map or fetching restaurants:", error)
+      }
+    }
+
+    loadMap()
   }, [])
 
   return (
@@ -85,3 +96,4 @@ export default function Map() {
     </div>
   )
 }
+
