@@ -189,6 +189,25 @@
   background-color: #f0f9ff;
 }
 
+.restaurantDot {
+  background-color: #e11d48 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.restaurantItem {
+  background-color: #fee2e2;
+  border-left: 3px solid #e11d48;
+}
+
+.restaurantCost {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 2px;
+}
+
 /* Dark mode overrides */
 :global(body.dark) .calendarContainer {
   background: #1f2937;

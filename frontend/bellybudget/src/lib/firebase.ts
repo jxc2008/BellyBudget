@@ -1,18 +1,19 @@
+// firebase.ts
 import { initializeApp } from "firebase/app";
-import { 
-  getFirestore, 
-  connectFirestoreEmulator, 
-  doc, 
-  getDoc, 
-  setDoc, 
-  onSnapshot 
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  onSnapshot,
+  enableNetwork
 } from "firebase/firestore";
-import { 
-  getAuth, 
-  connectAuthEmulator, 
-  onAuthStateChanged 
+import {
+  getAuth,
+  onAuthStateChanged
 } from "firebase/auth";
 
+// Your Firebase configuration (replace with your actual config values)
 const firebaseConfig = {
   apiKey: "AIzaSyBrDqhH-CleIEm7Dc10Ea1Box_UzIIGXfs",
   authDomain: "belly-budget-bca30.firebaseapp.com",
@@ -32,11 +33,9 @@ console.log("✅ Firebase Initialized:", app.name);
 console.log("🔥 Firestore Project ID:", db.app.options.projectId);
 
 // **Enable Firestore Network**
-import { enableNetwork } from "firebase/firestore";
 enableNetwork(db)
   .then(() => console.log("✅ Firestore network enabled"))
   .catch((err) => console.error("❌ Firestore network error:", err));
-
 
 // Fetch the meal plan for the authenticated user
 export const getMealPlan = async () => {
@@ -84,15 +83,17 @@ export const updateMealPlan = async (day: string, mealType: string, value: strin
 
 // Listen for real-time updates to the meal plan
 export const subscribeToMealPlan = (callback: (data: any) => void) => {
-  onAuthStateChanged(auth, (user) => {
+  let unsubscribeSnapshot = () => {};
+  const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
     if (!user) {
       console.warn("⚠️ No authenticated user for meal plan updates.");
+      callback({});
       return;
     }
 
     const mealPlanRef = doc(db, "users", user.uid, "mealPlan", "calendar");
 
-    return onSnapshot(mealPlanRef, (docSnap) => {
+    unsubscribeSnapshot = onSnapshot(mealPlanRef, (docSnap) => {
       if (docSnap.exists()) {
         callback(docSnap.data());
       } else {
@@ -100,6 +101,11 @@ export const subscribeToMealPlan = (callback: (data: any) => void) => {
       }
     });
   });
+  // Return a function that unsubscribes from both auth and snapshot listeners
+  return () => {
+    unsubscribeAuth();
+    unsubscribeSnapshot();
+  };
 };
 
 export { app };
