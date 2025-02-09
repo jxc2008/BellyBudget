@@ -1,0 +1,174 @@
+/* Budget.module.css */
+
+.budgetContainer {
+    padding: 2rem;
+    background: #f4f7fa;
+    border-radius: 10px;
+    margin: 1rem auto;
+    max-width: 1200px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .sectionTitle {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #333;
+  }
+  
+  /* Time Filter Buttons */
+  .timeFilter {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .timeFilter button {
+    margin: 0 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    background: #e0e0e0;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+  }
+  
+  .timeFilter button:hover {
+    background: #d0d0d0;
+    transform: scale(1.05);
+  }
+  
+  .activeFilter {
+    background: #8884d8;
+    color: #fff;
+  }
+  
+  /* Summary Cards */
+  .summaryCards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+    text-align: center;
+  }
+  
+  .amount {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+  }
+  
+  /* Progress Bar (for Weekly view) */
+  .progressBarContainer {
+    margin: 1.5rem auto;
+    width: 80%;
+    background: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .progressBar {
+    height: 20px;
+    background: #8884d8;
+    width: 0%;
+    transition: width 0.5s ease-in-out;
+  }
+  
+  .progressLabel {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 0;
+    left: 0;
+    font-size: 0.9rem;
+    color: #fff;
+    line-height: 20px;
+  }
+  
+  /* Charts Section */
+  .chartsSection {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  
+  .lineChartContainer {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 800px;
+  }
+  
+  /* Recent Transactions */
+  .recentTransactions {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  
+  .transactionList {
+    margin-top: 1rem;
+  }
+  
+  .transaction {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .transaction:last-child {
+    border-bottom: none;
+  }
+  
+  .transactionInfo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .transactionIcon {
+    margin-right: 1rem;
+  }
+  
+  .transactionAmount {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .expense {
+    color: #e74c3c;
+  }
+  
+  .userEmail {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  /* ---------- Force Light Mode for Budget Section ---------- */
+  /* These rules override any dark-mode settings so that the budget page always remains light. */
+  :global(body.dark) .budgetContainer,
+  :global(body.dark) .budgetContainer * {
+    background: #f4f7fa !important;
+    color: #333 !important;
+    border-color: #e0e0e0 !important;
+    box-shadow: none !important;
+  }
+  

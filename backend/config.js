@@ -11,5 +11,5 @@ export default {
   PLACE: process.env.PLACE,
   PLAID: process.env.PLAID,
   PLAID_ID: process.env.PLAID_ID,
-  PLAID_URL: process.env.PLAID_URL
+  OPENAI: process.env.OPENAI
 };

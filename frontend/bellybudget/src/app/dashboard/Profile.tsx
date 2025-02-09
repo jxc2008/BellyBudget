@@ -11,7 +11,8 @@ import {
 } from "firebase/auth";
 import { db, auth } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import styles from "./dashboard.module.css";
+import styles from "./Profile.module.css";
+
 
 interface ProfileProps {
   user: User | null;
