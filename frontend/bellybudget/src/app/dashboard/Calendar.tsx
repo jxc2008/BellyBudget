@@ -9,9 +9,9 @@ import styles from "./Calendar.module.css";
 
 // Define interfaces for meal and restaurant plans
 interface MealPlan {
-  breakfast: string;
-  lunch: string;
-  dinner: string;
+  breakfast: any; // Updated to allow string or object
+  lunch: any;
+  dinner: any;
 }
 
 interface WeeklyPlan {
@@ -262,16 +262,28 @@ const Calendar = () => {
             })}
           </h3>
           <div className={styles.mealsList}>
-            {Object.entries(getMealPlan(selectedDate)).map(([meal, plan]) => (
-              <div key={meal} className={styles.mealItem}>
-                <span className={styles.mealType}>
-                  {meal.charAt(0).toUpperCase() + meal.slice(1)}
-                </span>
-                <span className={styles.mealPlan}>
-                  {plan || "No meal planned"}
-                </span>
-              </div>
-            ))}
+            {Object.entries(getMealPlan(selectedDate)).map(([meal, plan]) => {
+              // Determine what to display:
+              let displayPlan = "No meal planned";
+              if (plan) {
+                if (typeof plan === "object") {
+                  // Customize the displayed text using restaurant info
+                  displayPlan = `${plan.name} (${plan.rating}★) - $${plan.estimated_cost.toFixed(2)}`;
+                } else {
+                  displayPlan = plan;
+                }
+              }
+              return (
+                <div key={meal} className={styles.mealItem}>
+                  <span className={styles.mealType}>
+                    {meal.charAt(0).toUpperCase() + meal.slice(1)}
+                  </span>
+                  <span className={styles.mealPlan}>
+                    {displayPlan}
+                  </span>
+                </div>
+              );
+            })}
             {getRestaurantPlan(selectedDate) && (
               <div className={`${styles.mealItem} ${styles.restaurantItem}`}>
                 <span className={styles.mealType}>Restaurant</span>
