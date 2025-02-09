@@ -6,7 +6,6 @@ import styles from "./RestaurantDetails.module.css";
 import { updateMealPlan } from "@/lib/firebase";
 
 // Define an interface for the restaurant object.
-// Extend this interface with additional properties as needed.
 interface Restaurant {
   name: string;
   price: number | string;
@@ -14,7 +13,7 @@ interface Restaurant {
   estimated_cost?: number;
 }
 
-// Define an interface for the restaurant event object that will be passed to updateMealPlan.
+// Define an interface for the restaurant event object.
 interface RestaurantEvent {
   name: string;
   rating: number;
