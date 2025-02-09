@@ -1,7 +1,9 @@
 // config.js
-require('dotenv').config();
+import dotenv from "dotenv";
+dotenv.config();
 
-module.exports = {
+
+export default {
   MONGODB_URI: process.env.MONGODB_URI || 'your-mongodb-atlas-connection-string',
   NESSIE_API_KEY: process.env.NESSIE_API_KEY || 'your-nessie-api-key',
   NESSIE_BASE_URL: process.env.NESSIE_BASE_URL || 'https://api.nessie.com/v1',

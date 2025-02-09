@@ -1,51 +1,56 @@
-// services.js
-const { Restaurant, Budget } = await import('./models.js');
-import axios from "axios";
-import config from "./config.js";
-import {response} from "express";
+import { restaurantService } from "./services.js";
+import dotenv from "dotenv";
+dotenv.config();
 
-const restaurantService = {
-  findNearbyRestaurants: async (lat, lng, radius) => {
-    // Parse numbers from query parameters
-    const latitude = parseFloat(lat);
-    const longitude = parseFloat(lng);
+import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
 
-    const maxDistance = parseFloat(radius); // assuming radius is in meters
+const config = new Configuration({
+  basePath: PlaidEnvironments.sandbox,  // Change to development/production if needed
+  clientId: process.env.PLAID_CLIENT_ID, // Use environment variables
+  secret: process.env.PLAID_SECRET,
+});
 
-    const PLACE = config.PLACE;
-    
-  const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${maxDistance}&type=restaurant&key=${config.PLACE}`;
-  try {
-    const response = await axios.get(url);
-    let resultList = response.data.results;
-    resultList = results.forEach(restaurant => {
+const plaidClient = new PlaidApi(config);
+
+/*
+async function main(){
+    let results = await restaurantService.findNearbyRestaurants(40.7359, -73.9911, 1000);
+    let filterResults = [];
+    results = results.map(restaurant => {
         filterResults.push({
-          name: restaurant.name,
-          opening_hours: restaurant.opening_hours,
-          price_level: restaurant.price_level,
-          rating: restaurant.rating,
-          scope: restaurant.scope,
-          vicinity: restaurant.vicinity,
-          user_ratings_total: restaurant.user_ratings_total
+        name: restaurant.name,
+        opening_hours: restaurant.opening_hours,
+        price_level: restaurant.price_level,
+        rating: restaurant.rating,
+        scope: restaurant.scope,
+        vicinity: restaurant.vicinity,
+        user_ratings_total: restaurant.user_ratings_total
         });
-      });    
-    return resultList;
-  }catch{
-    console.error("error: ", error);
-  }
-    /*
-    return await Restaurant.find({
-      location: {
-        $near: {
-          $geometry: { type: 'Point', coordinates: [longitude, latitude] },
-          $maxDistance: maxDistance
-        }
-      }
     });
-    */
+    console.log(filterResults);
+}
+
+main();
+*/
+
+
+let access_token = 'access-sandbox-0877fa6b-65b1-4ffe-b293-e67252e87ef9';
+/*
+try {
+    const response = await plaidClient.transactionsGet({
+      access_token,
+      start_date: '2024-01-01',
+      end_date: '2024-02-01',
+      options: { count: 10, offset: 0 }
+    });
+
+    console.log(response.data.transactions);
+  } catch (error) {
+   console.error(error);
   }
-};
+*/
+const restaurants = await restaurantService.findNearbyRestaurants(40.7359, -73.9911, 1000);
+console.log(restaurants);
 
 
-
-export{restaurantService};
+  
