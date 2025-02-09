@@ -1,16 +1,28 @@
 // services.js
-const { Restaurant, Budget } = require('./models');
-const axios = require('axios');
-const config = require('./config');
+const { Restaurant, Budget } = await import('./models.js');
+import axios from "axios";
+import config from "./config.js";
+import {response} from "express";
 
 const restaurantService = {
   findNearbyRestaurants: async (lat, lng, radius) => {
     // Parse numbers from query parameters
     const latitude = parseFloat(lat);
     const longitude = parseFloat(lng);
+
     const maxDistance = parseFloat(radius); // assuming radius is in meters
 
-    // Geospatial query using MongoDB
+    const PLACE = config.PLACE;
+    
+  const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${maxDistance}&type=restaurant&key=${config.PLACE}`;
+  try {
+    const response = await axios.get(url);
+    return response;
+    //console.log(response.data);
+  }catch{
+    console.error("error: ", error);
+  }
+    /*
     return await Restaurant.find({
       location: {
         $near: {
@@ -19,6 +31,7 @@ const restaurantService = {
         }
       }
     });
+    */
   }
 };
 
@@ -76,8 +89,4 @@ const budgetService = {
   }
 };
 
-module.exports = {
-  restaurantService,
-  bankService,
-  budgetService
-};
+export{restaurantService, bankService, budgetService};
