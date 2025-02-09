@@ -9,7 +9,7 @@ const app = express();
 app.use(cors()); // Enable CORS for frontend access
 app.use(express.json()); // Enable JSON parsing
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3001;
 
 // Configure Plaid API
 const configuration = new Configuration({
@@ -80,3 +80,8 @@ app.get('/restaurants', async (req, res) => {
 
 app.listen(3001, () => console.log('Server running on port 3001'));
 // Start the Express server
+
+app.get('/schedule', async (req, res) => {
+  const restaurants = await services.findNearbyRestaurants(40.7359, -73.9911, 1000, 500, 2);
+  res.json(restaurants);
+});

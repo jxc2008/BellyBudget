@@ -57,7 +57,7 @@ catch(error){
   console.log("error");
 }
 }
-export { findNearbyRestaurants };
+export default { findNearbyRestaurants };
 
 
 function selectRestaurants(restaurants, targetCount, totalBudget) {
@@ -105,3 +105,4 @@ function selectRestaurants(restaurants, targetCount, totalBudget) {
   }
   return selected;
 }
+

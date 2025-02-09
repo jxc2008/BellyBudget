@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { auth } from "../../lib/firebase";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendEmailVerification
+} from "firebase/auth";
 import { useRouter } from "next/navigation";
 import styles from "./auth.module.css";
 
@@ -15,24 +19,49 @@ export default function AuthPage() {
 
   const handleAuth = async () => {
     setError("");
+
+    // Use a stricter regex for validating emails.
+    // This regex requires an "@" and a period with at least 2 characters following it.
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
+        router.push("/dashboard");
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        // Create a new user and send a verification email
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        await sendEmailVerification(user);
+        // After sign-up, redirect to the verify email page
+        router.push("/verify-email");
       }
-      router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message);
+      // If attempting to log in and the user isn't found, force them to sign up.
+      if (isLogin && err.code === "auth/user-not-found") {
+        setError("No user found. Please sign up first.");
+      } else {
+        setError(err.message);
+      }
     }
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.formContainer}>
-        <h1 className={styles.title}>{isLogin ? "Welcome Back" : "Create Account"}</h1>
-        <p className={styles.subtitle}>{isLogin ? "Log in to access your account" : "Sign up to get started"}</p>
-        
+        <h1 className={styles.title}>
+          {isLogin ? "Welcome Back" : "Create Account"}
+        </h1>
+        <p className={styles.subtitle}>
+          {isLogin
+            ? "Log in to access your account"
+            : "Sign up to get started"}
+        </p>
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -75,11 +104,16 @@ export default function AuthPage() {
         </form>
 
         <p className={styles.toggle} onClick={() => setIsLogin(!isLogin)}>
-          {isLogin ? "Need an account? Sign Up" : "Already have an account? Log In"}
+          {isLogin
+            ? "Need an account? Sign Up"
+            : "Already have an account? Log In"}
         </p>
 
-        {/* ✅ Added Back to Home Button */}
-        <button className={styles.backButton} onClick={() => router.push("/")}>
+        {/* Back to Home Button */}
+        <button
+          className={styles.backButton}
+          onClick={() => router.push("/")}
+        >
           ← Back to Home
         </button>
       </div>

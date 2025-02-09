@@ -6,19 +6,18 @@ import RestaurantDetails from "./RestaurantDetails"
 import styles from "./Map.module.css"
 import axios from "axios"
 
-const GEOAPIFY_API_KEY = "9182062136cc42f39ecfd41ada924841"
+const GEOAPIFY_API_KEY = process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY
 
 async function getCoordinates(address: string) {
   const encodedAddress = encodeURIComponent(address)
   const url = `https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&apiKey=${GEOAPIFY_API_KEY}`
-
   try {
     const response = await axios.get(url)
     const results = response.data.features
 
     if (results.length > 0) {
-      const [lon, lat] = results[0].geometry.coordinates // Note the order: [longitude, latitude]
-      return { lat, lng: lon } // Return as {lat, lng} for Google Maps
+      const [lon, lat] = results[0].geometry.coordinates // Ensure correct order
+      return { lat, lng: lon } // Google Maps needs { lat, lng }
     } else {
       console.error("No results found for address:", address)
       return null
@@ -29,17 +28,25 @@ async function getCoordinates(address: string) {
   }
 }
 
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+const GOOGLE_MAPS_API_KEY = 'AIzaSyCGO7WbghY0CTDElvwYbWqZdKLXi_61qu4';
+
+const priceMapping: { [key: number]: number } = {
+  1: 10,
+  2: 15,
+  3: 20,
+  4: 30,
+  5: 40,
+}
 
 export default function Map() {
   const mapRef = useRef(null)
-  const [map, setMap] = useState(null)
-  const [selectedRestaurant, setSelectedRestaurant] = useState(null)
+  const [map, setMap] = useState<google.maps.Map | null>(null)
+  const [selectedRestaurant, setSelectedRestaurant] = useState<any>(null)
 
   useEffect(() => {
     const loadMap = async () => {
       const loader = new Loader({
-        apiKey: GOOGLE_MAPS_API_KEY,
+        apiKey: GOOGLE_MAPS_API_KEY!,
         version: "weekly",
       })
 
@@ -52,7 +59,7 @@ export default function Map() {
           zoomControl: true,
         }
 
-        const newMap = new google.maps.Map(mapRef.current, mapOptions)
+        const newMap = new google.maps.Map(mapRef.current!, mapOptions)
         setMap(newMap)
         console.log("Map Object:", newMap) // Debugging
 
@@ -66,14 +73,20 @@ export default function Map() {
           if (coordinates) {
             console.log(`Coordinates for ${restaurant.name}:`, coordinates) // Debugging
 
+            // Get price from price_level
+            const price = priceMapping[restaurant.price_level] || "N/A"
+
             const marker = new google.maps.Marker({
               position: coordinates,
               map: newMap,
-              title: restaurant.name,
+              title: `${restaurant.name} - ${price}`, // Show price in marker title
             })
 
             marker.addListener("click", () => {
-              setSelectedRestaurant(restaurant)
+              setSelectedRestaurant({
+                ...restaurant,
+                price: `${price}`, // Add price to restaurant details
+              })
             })
           } else {
             console.error(`Failed to get coordinates for: ${address}`)
@@ -96,4 +109,3 @@ export default function Map() {
     </div>
   )
 }
-
