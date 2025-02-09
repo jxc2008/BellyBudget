@@ -1,71 +1,161 @@
 .hero {
+    position: relative;
     min-height: 100vh;
+    background: linear-gradient(135deg, #6b46c1, #3b82f6);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: var(--white);
-}
-
-.container {
+    overflow: hidden;
+    padding-top: 70px; /* Add padding to account for the fixed navbar */
+  }
+  
+  .container {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .content {
+    max-width: 800px;
+    margin: 0 auto;
     text-align: center;
-}
-
-.title {
-    font-size: 3rem;
-    font-weight: bold;
+    color: white;
+  }
+  
+  .title {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1.2;
     margin-bottom: 1rem;
-    animation: fadeIn 0.8s ease-out forwards;
-}
-
-.subtitle {
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
-    animation: fadeIn 0.8s ease-out 0.2s forwards;
+  }
+  
+  .subtitle {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+  
+  .titleWord,
+  .subtitleWord {
+    display: inline-block;
     opacity: 0;
-}
-
-.ctaButton {
-    background-color: var(--white);
-    color: var(--primary-color);
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 0.75rem 2rem;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+  
+  .titleWord {
+    animation-delay: 0.1s;
+  }
+  .subtitleWord:nth-child(1) {
+    animation-delay: 0.2s;
+  }
+  .subtitleWord:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+  .subtitleWord:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  .subtitleWord:nth-child(4) {
+    animation-delay: 0.5s;
+  }
+  
+  .description {
+    font-size: 1.5rem;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out 0.6s forwards;
+  }
+  
+  .ctaButton {
+    background-color: white;
+    color: #6b46c1;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 1rem 2.5rem;
     border: none;
-    border-radius: 9999px;
+    border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease;
-    animation: fadeIn 0.8s ease-out 0.4s forwards, pulse 2s infinite;
     opacity: 0;
-}
-
-.ctaButton:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-@keyframes fadeIn {
+    animation: fadeIn 0.8s ease-out 0.7s forwards, pulse 2s infinite;
+  }
+  
+  .ctaButton:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    background-color: #f8f9fa;
+  }
+  
+  .wavesWrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    z-index: 1;
+  }
+  
+  .waves {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100px;
+  }
+  
+  @keyframes fadeInUp {
     from {
-        opacity: 0;
-        transform: translateY(20px);
+      opacity: 0;
+      transform: translateY(20px);
     }
     to {
-        opacity: 1;
-        transform: translateY(0);
+      opacity: 1;
+      transform: translateY(0);
     }
-}
-
-@keyframes pulse {
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes pulse {
     0% {
-        transform: scale(1);
+      transform: scale(1);
     }
     50% {
-        transform: scale(1.05);
+      transform: scale(1.05);
     }
     100% {
-        transform: scale(1);
+      transform: scale(1);
     }
-}
+  }
+  
+  @media (max-width: 768px) {
+    .title {
+      font-size: 3rem;
+    }
+  
+    .subtitle {
+      font-size: 2.5rem;
+    }
+  
+    .description {
+      font-size: 1.25rem;
+    }
+  
+    .ctaButton {
+      font-size: 1.1rem;
+      padding: 0.875rem 2rem;
+    }
+  }
+  
+  

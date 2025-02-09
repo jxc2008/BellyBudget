@@ -1,7 +1,7 @@
 // calendar.tsx
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Utensils } from "lucide-react";
 import { db, auth, subscribeToMealPlan } from "@/lib/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -61,16 +61,59 @@ const Calendar = () => {
     return () => unsubscribeMealPlan();
   }, []);
 
-  // Get meal plan for a specific date using the day of week
+  /**
+   * Compute the next occurrence date (as an ISO string) for each weekday that has a meal plan.
+   * For example, if the plan has a key "monday", we compute the next Monday (including today if it is Monday).
+   */
+  const nextMealPlanOccurrence = useMemo(() => {
+    const today = new Date();
+    const daysOfWeek = [
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ];
+    const result: { [weekday: string]: string } = {};
+
+    // Loop over each weekday key in the weekly meal plan.
+    Object.entries(weeklyMealPlan).forEach(([weekday, mealPlan]) => {
+      // Only compute a next occurrence if there is at least one meal planned.
+      if (mealPlan.breakfast || mealPlan.lunch || mealPlan.dinner) {
+        const targetIndex = daysOfWeek.indexOf(weekday);
+        const fromIndex = today.getDay();
+        // Calculate how many days until the next occurrence (0 means today)
+        const delta = (targetIndex - fromIndex + 7) % 7;
+        const nextDate = new Date(today);
+        nextDate.setDate(today.getDate() + delta);
+        // Store in ISO date format (YYYY-MM-DD)
+        result[weekday] = nextDate.toISOString().split("T")[0];
+      }
+    });
+
+    return result;
+  }, [weeklyMealPlan]);
+
+  /**
+   * Get the meal plan for a specific date.
+   * Only return the plan if the given date is the computed "next" occurrence for that weekday.
+   * Otherwise, return an empty plan so that only one cell (the nearest future occurrence) displays the meals.
+   */
   const getMealPlan = useCallback(
     (date: Date): MealPlan => {
       const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
-      return weeklyMealPlan[dayOfWeek] || { breakfast: "", lunch: "", dinner: "" };
+      const dateString = date.toISOString().split("T")[0];
+      if (weeklyMealPlan[dayOfWeek] && nextMealPlanOccurrence[dayOfWeek] === dateString) {
+        return weeklyMealPlan[dayOfWeek];
+      }
+      return { breakfast: "", lunch: "", dinner: "" };
     },
-    [weeklyMealPlan]
+    [weeklyMealPlan, nextMealPlanOccurrence]
   );
 
-  // Get restaurant plan for a specific date
+  // Get restaurant plan for a specific date (no change needed for these date‐specific events)
   const getRestaurantPlan = useCallback(
     (date: Date): RestaurantPlan | null => {
       const dateString = date.toISOString().split("T")[0];
@@ -107,6 +150,7 @@ const Calendar = () => {
       const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
       const isToday = date.toDateString() === today.toDateString();
       const isSelected = date.toDateString() === selectedDate.toDateString();
+      // Only one day (the nearest future occurrence for that weekday) will have a non-empty plan.
       const mealPlan = getMealPlan(date);
       const restaurantPlan = getRestaurantPlan(date);
       const hasMeals = mealPlan.breakfast || mealPlan.lunch || mealPlan.dinner;
@@ -122,7 +166,7 @@ const Calendar = () => {
           tabIndex={0}
           aria-label={`${date.toLocaleDateString("en-US", {
             month: "long",
-            day: "numeric"
+            day: "numeric",
           })}${hasMeals ? ", has meals planned" : ""}${
             restaurantPlan ? `, Restaurant: ${restaurantPlan.restaurantName}` : ""
           }`}
@@ -165,7 +209,14 @@ const Calendar = () => {
     }
 
     return days;
-  }, [currentDate, selectedDate, startingDay, daysInMonth, getMealPlan, getRestaurantPlan]);
+  }, [
+    currentDate,
+    selectedDate,
+    startingDay,
+    daysInMonth,
+    getMealPlan,
+    getRestaurantPlan,
+  ]);
 
   return (
     <div className={styles.calendarContainer}>
@@ -207,7 +258,7 @@ const Calendar = () => {
             {selectedDate.toLocaleDateString("en-US", {
               weekday: "long",
               month: "long",
-              day: "numeric"
+              day: "numeric",
             })}
           </h3>
           <div className={styles.mealsList}>
@@ -227,7 +278,8 @@ const Calendar = () => {
                 <span className={styles.mealPlan}>
                   {getRestaurantPlan(selectedDate)?.restaurantName} at {getRestaurantPlan(selectedDate)?.time}
                   <div className={styles.restaurantCost}>
-                    Estimated cost: ${getRestaurantPlan(selectedDate)?.estimatedCost.toFixed(2)}
+                    Estimated cost: $
+                    {getRestaurantPlan(selectedDate)?.estimatedCost.toFixed(2)}
                   </div>
                 </span>
               </div>
