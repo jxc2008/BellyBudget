@@ -17,9 +17,7 @@ const restaurantService = {
   const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${maxDistance}&type=restaurant&key=${config.PLACE}`;
   try {
     const response = await axios.get(url);
-    const jsonList = response.data;
-    //console.log(response.data);
-    return jsonList;
+    return response.data.results;
   }catch{
     console.error("error: ", error);
   }
