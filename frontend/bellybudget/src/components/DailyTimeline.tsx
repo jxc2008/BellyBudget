@@ -7,17 +7,22 @@ import styles from "./DailyTimeline.module.css"
 export default function DailyTimeline() {
   const { meals } = useBudget()
   const [isHovered, setIsHovered] = useState(false)
-  const timelineRef = useRef(null)
+  const timelineRef = useRef<HTMLDivElement>(null)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    const handleMouseMove = (event) => {
+    interface MousePosition {
+      x: number
+      y: number
+    }
+
+    const handleMouseMove = (event: MouseEvent) => {
       if (timelineRef.current) {
-        const rect = timelineRef.current.getBoundingClientRect()
-        setMousePosition({
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top,
-        })
+      const rect = timelineRef.current.getBoundingClientRect()
+      setMousePosition({
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+      })
       }
     }
 

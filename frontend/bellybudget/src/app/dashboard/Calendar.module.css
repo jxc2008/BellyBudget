@@ -1,0 +1,306 @@
+.calendarContainer {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.monthYear {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.navigationButton {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.navigationButton:hover {
+  background-color: #f3f4f6;
+  color: #1a1a1a;
+}
+
+.navigationButton:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  text-align: center;
+  font-weight: 500;
+  color: #666;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.day {
+  aspect-ratio: 1;
+  padding: 0.5rem;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.day:hover {
+  background-color: #f3f4f6;
+  border-color: #e5e7eb;
+}
+
+.day:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+  background-color: #f3f4f6;
+}
+
+.dayNumber {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.today {
+  background-color: #f0f9ff;
+  border-color: #93c5fd;
+}
+
+.selected {
+  background-color: #3b82f6;
+  border-color: #2563eb;
+}
+
+.selected .dayNumber {
+  color: #1a1a1a;
+}
+
+.emptyDay {
+  aspect-ratio: 1;
+}
+
+.mealIndicators {
+  display: flex;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.mealDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  transition: transform 0.2s ease;
+}
+
+.mealDot:hover {
+  transform: scale(1.5);
+}
+
+.mealDot[data-meal="breakfast"] {
+  background-color: #22c55e;
+}
+
+.mealDot[data-meal="lunch"] {
+  background-color: #f59e0b;
+}
+
+.mealDot[data-meal="dinner"] {
+  background-color: #ef4444;
+}
+
+.selectedDateMeals {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.selectedDateTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+}
+
+.mealsList {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.mealItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.mealItem:hover {
+  transform: translateX(4px);
+  background-color: #f3f4f6;
+}
+
+.mealType {
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.mealPlan {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.hasMeals {
+  background-color: #f0f9ff;
+}
+
+/* Dark mode overrides */
+:global(body.dark) .calendarContainer {
+  background: #1f2937;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+:global(body.dark) .monthYear {
+  color: #f3f4f6;
+}
+
+:global(body.dark) .navigationButton {
+  color: #9ca3af;
+}
+
+:global(body.dark) .navigationButton:hover {
+  background-color: #374151;
+  color: #f3f4f6;
+}
+
+:global(body.dark) .weekday {
+  color: #9ca3af;
+}
+
+:global(body.dark) .day {
+  border-color: #374151;
+  background-color: #1f2937;
+}
+
+:global(body.dark) .day:hover {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+
+:global(body.dark) .dayNumber {
+  color: #f3f4f6;
+}
+
+:global(body.dark) .today {
+  background-color: #1e3a8a;
+  border-color: #3b82f6;
+}
+
+:global(body.dark) .selected {
+  background-color: #3b82f6;
+  border-color: #60a5fa;
+}
+
+:global(body.dark) .selected .dayNumber {
+  color: white;
+}
+
+:global(body.dark) .mealItem {
+  background-color: #374151;
+}
+
+:global(body.dark) .mealItem:hover {
+  background-color: #4b5563;
+}
+
+:global(body.dark) .mealType {
+  color: #e5e7eb;
+}
+
+:global(body.dark) .mealPlan {
+  color: #9ca3af;
+}
+
+:global(body.dark) .hasMeals {
+  background-color: #1e3a8a;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .calendarContainer {
+    padding: 1rem;
+  }
+
+  .monthYear {
+    font-size: 1.25rem;
+  }
+
+  .weekday {
+    font-size: 0.8rem;
+    padding: 0.25rem;
+  }
+
+  .dayNumber {
+    font-size: 0.8rem;
+  }
+
+  .mealDot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .selectedDateTitle {
+    font-size: 1rem;
+  }
+
+  .mealItem {
+    padding: 0.5rem;
+  }
+
+  .mealType,
+  .mealPlan {
+    font-size: 0.8rem;
+  }
+}
+
+/* Accessibility focus styles */
+.day:focus-visible,
+.navigationButton:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}

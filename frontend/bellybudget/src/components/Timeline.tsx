@@ -5,7 +5,7 @@ import { useBudget } from "@/contexts/BudgetContext"
 import styles from "./Timeline.module.css"
 
 export default function Timeline() {
-  const { weeklyPlan } = useBudget()
+  const { weeklyPlan }: { weeklyPlan: Record<string, { breakfast: string; lunch: string; dinner: string }> } = useBudget()
   const [hoveredHour, setHoveredHour] = useState<number | null>(null)
   const timelineRef = useRef<HTMLDivElement>(null)
   const [mouseY, setMouseY] = useState(0)
