@@ -1,0 +1,17 @@
+.plannerContainer {
+  position: relative;
+  height: calc(100vh - 4rem); /* Adjust based on your header height */
+  overflow: hidden;
+}
+
+.plannerContent {
+  display: flex;
+  height: 100%;
+  position: relative; /* Added position relative */
+}
+
+/* Adjust the Map component to take up the available space */
+.plannerContent > div:first-child {
+  flex: 1;
+  position: relative; /* Ensure relative positioning */
+}

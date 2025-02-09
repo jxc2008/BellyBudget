@@ -1,5 +1,5 @@
 .timeline {
-  position: fixed;
+  position: absolute; /* Changed from fixed to absolute */
   right: 0;
   top: 0;
   bottom: 0;

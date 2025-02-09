@@ -7,9 +7,9 @@ import {
   updatePassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
-  signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
-import { db } from "@/lib/firebase";
+import { db, auth } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import styles from "./dashboard.module.css";
 
@@ -98,11 +98,8 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
     setMessage("");
 
     try {
-      // Reauthenticate the user with their old password
       const credential = EmailAuthProvider.credential(user.email, oldPassword);
       await reauthenticateWithCredential(user, credential);
-
-      // After successful authentication, update the password
       await updatePassword(user, newPassword);
 
       setMessage("✅ Password updated successfully!");
@@ -206,6 +203,16 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
             {loading ? "Updating..." : "Change Password"}
           </button>
         </form>
+      </div>
+
+      {/* 🔴 Centered Welcome Message & Logout Button */}
+      <div className={styles.welcomeContainer}>
+        <button
+          className={styles.centeredLogoutButton}
+          onClick={() => signOut(auth)}
+        >
+          Logout
+        </button>
       </div>
     </div>
   );

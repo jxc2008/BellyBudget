@@ -1,5 +1,5 @@
 .overlay {
-  position: fixed;
+  position: absolute; /* Changed from fixed to absolute */
   top: 0;
   left: 0;
   right: 0;
@@ -22,10 +22,12 @@
   padding: 2rem;
   width: 400px;
   height: 100%;
-  position: relative;
+  position: absolute; /* Changed to absolute */
+  left: 0;
+  top: 0;
   animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   overflow-y: auto;
-  max-height: 100vh;
+  max-height: 100%;
 }
 
 .calendar.closing {
