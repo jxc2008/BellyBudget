@@ -34,6 +34,12 @@ export default function Dashboard() {
   const [firstName, setFirstName] = useState("");
   const [transactions, setTransactions] = useState([]); // Store API transactions
   const [loadingTransactions, setLoadingTransactions] = useState(true);
+  const [spendingData, setSpendingData] = useState([]); // Pie chart data
+
+  // Budget-related state
+  const [budget, setBudget] = useState(500); // Total budget
+  const [spent, setSpent] = useState(187.85); // Amount spent
+  const [remaining, setRemaining] = useState(budget - spent); // Remaining budget
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -62,14 +68,15 @@ export default function Dashboard() {
         }
 
         const data = await response.json();
-        console.log("🔍 Transactions received:", data); // Debugging step
+        console.log("🔍 Transactions received:", data);
 
-        // ✅ Fix: Extract transactions array correctly
         if (data && Array.isArray(data.transactions)) {
           setTransactions(data.transactions);
+          processSpendingData(data.transactions); // ✅ Update Pie Chart Data
         } else {
           console.warn("⚠️ Unexpected data format:", data);
-          setTransactions([]); // Prevent state issues
+          setTransactions([]);
+          setSpendingData([]);
         }
       } catch (error) {
         console.error("🔥 Error fetching transactions:", error);
@@ -81,6 +88,69 @@ export default function Dashboard() {
     fetchTransactions();
   }, []);
 
+  // ✅ Intelligent food detection logic
+  const isFoodRelated = (transactionName) => {
+    // Common food-related terms (can be expanded)
+    const foodKeywords = [
+      "coffee", "cafe", "restaurant", "burger", "pizza", "bakery", "diner", "fast food", "starbucks", "mcdonald's",
+      "subway", "kfc", "taco", "sushi", "grill", "bistro", "delivery", "takeout", "meal", "food", "eat", "dining"
+    ];
+
+    // Normalize the transaction name for comparison
+    const normalizedName = transactionName.toLowerCase();
+
+    // Check if the transaction name contains any food-related keyword
+    return foodKeywords.some((keyword) => normalizedName.includes(keyword));
+  };
+
+  // ✅ Process transactions into categories for Spending Breakdown Pie Chart
+  const processSpendingData = (transactions) => {
+    const categoryMap = {
+      Groceries: 0,
+      Restaurants: 0,
+      Coffee: 0,
+      Other: 0,
+    };
+
+    transactions.forEach((transaction) => {
+      const transactionName = transaction.name?.toLowerCase() || "";
+
+      if (transaction.category.includes("Groceries")) {
+        categoryMap.Groceries += Math.abs(transaction.amount);
+      } else if (isFoodRelated(transactionName)) {
+        // Categorize based on transaction name
+        if (transactionName.includes("coffee") || transactionName.includes("starbucks")) {
+          categoryMap.Coffee += Math.abs(transaction.amount);
+        } else if (transactionName.includes("restaurant") || transactionName.includes("dining")) {
+          categoryMap.Restaurants += Math.abs(transaction.amount);
+        } else {
+          // Default to "Restaurants" for other food-related transactions
+          categoryMap.Restaurants += Math.abs(transaction.amount);
+        }
+      } else {
+        categoryMap.Other += Math.abs(transaction.amount);
+      }
+    });
+
+    setSpendingData([
+      { name: "Groceries", value: categoryMap.Groceries, color: "#3498DB" },
+      { name: "Restaurants", value: categoryMap.Restaurants, color: "#E67E22" },
+      { name: "Coffee", value: categoryMap.Coffee, color: "#8E44AD" },
+      { name: "Other", value: categoryMap.Other, color: "#F1C40F" },
+    ]);
+  };
+
+  // ✅ Budget pie chart data
+  const getBudgetData = () => {
+    const remainingBudget = budget - spent;
+    const isOverBudget = remainingBudget < 0;
+
+    return [
+      { name: "Spent", value: isOverBudget ? budget : spent, color: "#FF5733" },
+      { name: "Remaining", value: isOverBudget ? 0 : remainingBudget, color: "#28A745" },
+    ];
+  };
+
   const navItems = [
     { id: "overview", label: "Overview", icon: Home },
     { id: "budget", label: "Budget", icon: BudgetIcon },
@@ -88,20 +158,6 @@ export default function Dashboard() {
     { id: "planner", label: "Planner", icon: Calendar },
     { id: "profile", label: "Profile", icon: User },
     { id: "settings", label: "Settings", icon: Settings },
-  ];
-
-  // Budget Data for Pie Chart
-  const budgetData = [
-    { name: "Spent", value: 187.85, color: "#FF5733" },
-    { name: "Remaining", value: 312.15, color: "#28A745" },
-  ];
-
-  // Spending Breakdown Pie Chart Data
-  const spendingData = [
-    { name: "Groceries", value: 85.5, color: "#3498DB" },
-    { name: "Restaurants", value: 32.4, color: "#E67E22" },
-    { name: "Coffee", value: 4.75, color: "#8E44AD" },
-    { name: "Other", value: 65.2, color: "#F1C40F" },
   ];
 
   const renderContent = () => {
@@ -118,15 +174,16 @@ export default function Dashboard() {
         return (
           <>
             <div className={styles.gridContainer}>
+              {/* Budget Overview Card */}
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
                   <h2 className={styles.cardTitle}>Budget Overview</h2>
+                  <p className={styles.budgetAmount}>${budget.toFixed(2)}</p>
                 </div>
-                <p className={styles.amount}>$500.00</p>
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
-                    <Pie data={budgetData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                      {budgetData.map((entry, index) => (
+                    <Pie data={getBudgetData()} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                      {getBudgetData().map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
@@ -136,6 +193,7 @@ export default function Dashboard() {
                 </ResponsiveContainer>
               </div>
 
+              {/* Spending Breakdown Card */}
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
                   <h2 className={styles.cardTitle}>Spending Breakdown</h2>
