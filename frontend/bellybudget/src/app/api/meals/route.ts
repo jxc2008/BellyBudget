@@ -22,7 +22,8 @@ export async function GET() {
     });
   } catch (error) {
     console.error("🔥 Firestore GET Error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
