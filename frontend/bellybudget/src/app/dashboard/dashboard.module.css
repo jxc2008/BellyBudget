@@ -241,4 +241,172 @@
     text-align: center;
   }
   
+  /* Budget component styles */
+  .budgetContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .budgetSummary {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  
+  .budgetCharts {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  
+  .pieChartContainer,
+  .barChartContainer {
+    width: 48%;
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .budgetCategories {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  
+  .budgetTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .budgetTable th,
+  .budgetTable td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .budgetTable th {
+    font-weight: bold;
+    color: #4a5568;
+  }
+  
+  .removeButton {
+    background: none;
+    border: none;
+    color: #e53e3e;
+    cursor: pointer;
+  }
+  
+  .addCategory {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .addCategoryForm {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .addButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .addButton:hover {
+    background-color: #357abd;
+  }
+  
+  /* Expenses component styles */
+  .expensesContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .expensesSummary {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  
+  .expensesChart {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  
+  .expensesList {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  
+  .expensesTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .expensesTable th,
+  .expensesTable td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .expensesTable th {
+    font-weight: bold;
+    color: #4a5568;
+  }
+  
+  .addExpense {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .addExpenseForm {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .addExpenseForm .input {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .addButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .addButton:hover {
+    background-color: #357abd;
+  }
+  
   

@@ -8,21 +8,23 @@ import { doc, getDoc } from "firebase/firestore";
 import styles from "./dashboard.module.css";
 import {
   Home,
-  PieChart as PieChartIcon,
   DollarSign,
   Settings,
   Calendar,
-  Coffee,
   User,
-  PizzaIcon as FastFood,
   ShoppingBag,
+  PizzaIcon as FastFood,
+  Coffee,
+  PieChart as BudgetIcon,
 } from "lucide-react";
 
-// Import Recharts
+// Import Recharts components
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-// Import the Profile component that accepts a user prop
+// Import components
 import Profile from "./Profile";
+import Budget from "./Budget";
+import Expenses from "./Expenses";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -49,7 +51,7 @@ export default function Dashboard() {
 
   const navItems = [
     { id: "overview", label: "Overview", icon: Home },
-    { id: "budget", label: "Budget", icon: PieChartIcon },
+    { id: "budget", label: "Budget", icon: BudgetIcon },
     { id: "expenses", label: "Expenses", icon: DollarSign },
     { id: "calendar", label: "Meal Calendar", icon: Calendar },
     { id: "profile", label: "Profile", icon: User },
@@ -80,6 +82,10 @@ export default function Dashboard() {
     switch (activeTab) {
       case "profile":
         return <Profile user={user} />;
+      case "budget":
+        return <Budget />;
+      case "expenses":
+        return <Expenses />;
       default:
         return (
           <>
@@ -91,15 +97,7 @@ export default function Dashboard() {
                 <p className={styles.amount}>$500.00</p>
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
-                    <Pie
-                      data={budgetData}
-                      dataKey="value"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      label
-                    >
+                    <Pie data={budgetData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
                       {budgetData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
@@ -116,15 +114,7 @@ export default function Dashboard() {
                 </div>
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
-                    <Pie
-                      data={spendingData}
-                      dataKey="value"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      label
-                    >
+                    <Pie data={spendingData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
                       {spendingData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
@@ -166,11 +156,7 @@ export default function Dashboard() {
     <div className={styles.container}>
       <aside className={styles.sidebar}>
         {navItems.map((item) => (
-          <div
-            key={item.id}
-            className={`${styles.navItem} ${activeTab === item.id ? styles.navItemActive : ""}`}
-            onClick={() => setActiveTab(item.id)}
-          >
+          <div key={item.id} className={`${styles.navItem} ${activeTab === item.id ? styles.navItemActive : ""}`} onClick={() => setActiveTab(item.id)}>
             <item.icon size={20} className={styles.navIcon} />
             {item.label}
           </div>
@@ -179,17 +165,10 @@ export default function Dashboard() {
 
       <main className={styles.mainContent}>
         <header className={styles.header}>
-          <div>
-            <h1 className={styles.welcomeText}>
-              Welcome Back{firstName ? `, ${firstName}` : ""}
-            </h1>
-            {user && <p className={styles.userEmail}>{user.email}</p>}
-          </div>
-          <button onClick={() => signOut(auth)} className={styles.logoutButton}>
-            Logout
-          </button>
+          <h1 className={styles.welcomeText}>Welcome Back{firstName ? `, ${firstName}` : ""}</h1>
+          {user && <p className={styles.userEmail}>{user.email}</p>}
+          <button onClick={() => signOut(auth)} className={styles.logoutButton}>Logout</button>
         </header>
-
         {renderContent()}
       </main>
     </div>
