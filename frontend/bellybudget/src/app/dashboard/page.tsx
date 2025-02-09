@@ -7,7 +7,17 @@ import { useRouter } from "next/navigation";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { BudgetProvider } from "@/contexts/BudgetContext";
 import styles from "./dashboard.module.css";
-import { Home, Settings, Calendar as CalendarIcon, User, ShoppingBag, Pizza, Coffee, Pocket as BudgetIcon, ClipboardList } from "lucide-react";
+import { 
+  Home, 
+  Settings, 
+  Calendar as CalendarIcon, 
+  User, 
+  ShoppingBag, 
+  Pizza, 
+  Coffee, 
+  Pocket as BudgetIcon, 
+  ClipboardList 
+} from "lucide-react";
 
 // Import Recharts components
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
@@ -33,6 +43,7 @@ type SpendingData = {
 };
 
 type UserData = {
+  firstName?: string;
   surveyData: {
     weeklyBudget: string;
     mealsPerDay: string;
@@ -343,3 +354,4 @@ export default function Dashboard() {
     </BudgetProvider>
   );
 }
+
