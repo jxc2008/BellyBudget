@@ -1,12 +1,36 @@
-import { useState, useEffect } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import styles from "./RestaurantDetails.module.css";
 // Import the updateMealPlan function directly from your firebase module.
 import { updateMealPlan } from "@/lib/firebase";
 
-export default function RestaurantDetails({ restaurant, onClose }) {
-  const [isClosing, setIsClosing] = useState(false);
-  const [selectedDay, setSelectedDay] = useState("monday");
-  const [selectedMeal, setSelectedMeal] = useState("lunch");
+// Define an interface for the restaurant object.
+// Extend this interface with additional properties as needed.
+interface Restaurant {
+  name: string;
+  price: number | string;
+  rating?: number;
+  estimated_cost?: number;
+}
+
+// Define an interface for the restaurant event object that will be passed to updateMealPlan.
+interface RestaurantEvent {
+  name: string;
+  rating: number;
+  estimated_cost: number;
+}
+
+// Define the props interface for RestaurantDetails.
+interface RestaurantDetailsProps {
+  restaurant: Restaurant;
+  onClose: () => void;
+}
+
+const RestaurantDetails: React.FC<RestaurantDetailsProps> = ({ restaurant, onClose }) => {
+  const [isClosing, setIsClosing] = useState<boolean>(false);
+  const [selectedDay, setSelectedDay] = useState<string>("monday");
+  const [selectedMeal, setSelectedMeal] = useState<string>("lunch");
 
   const handleClose = () => {
     setIsClosing(true);
@@ -15,24 +39,22 @@ export default function RestaurantDetails({ restaurant, onClose }) {
 
   const handleAddToCalendar = () => {
     // Create a restaurant event object with details you want stored.
-    // You can add additional fields as needed.
-    const restaurantEvent = {
+    const restaurantEvent: RestaurantEvent = {
       name: restaurant.name,
       rating: restaurant.rating || 0,
       estimated_cost: restaurant.estimated_cost || Number(restaurant.price) || 0,
-      // You might include additional info such as address, time, etc.
     };
 
-    // Call the Firebase update function so that the meal plan for the selected day
-    // and meal slot is updated with this restaurant event.
+    // Update the meal plan using the Firebase function.
     updateMealPlan(selectedDay, selectedMeal, restaurantEvent);
     handleClose();
   };
 
-  // Close when clicking outside of the details container.
+  // Close the details view when clicking outside of the container.
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest(`.${styles.details}`)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest(`.${styles.details}`)) {
         handleClose();
       }
     };
@@ -42,14 +64,21 @@ export default function RestaurantDetails({ restaurant, onClose }) {
 
   return (
     <div className={`${styles.details} ${isClosing ? styles.closing : ""}`}>
-      <button className={styles.closeButton} onClick={handleClose}>×</button>
+      <button className={styles.closeButton} onClick={handleClose}>
+        ×
+      </button>
       <h2>{restaurant.name}</h2>
       <p>Price: ${restaurant.price}</p>
 
       {/* Meal selection dropdowns */}
       <div className={styles.selectionContainer}>
         <label>Day:</label>
-        <select value={selectedDay} onChange={(e) => setSelectedDay(e.target.value)}>
+        <select
+          value={selectedDay}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            setSelectedDay(e.target.value)
+          }
+        >
           {["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map((day) => (
             <option key={day} value={day}>
               {day.charAt(0).toUpperCase() + day.slice(1)}
@@ -58,7 +87,12 @@ export default function RestaurantDetails({ restaurant, onClose }) {
         </select>
 
         <label>Meal:</label>
-        <select value={selectedMeal} onChange={(e) => setSelectedMeal(e.target.value)}>
+        <select
+          value={selectedMeal}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            setSelectedMeal(e.target.value)
+          }
+        >
           {["breakfast", "lunch", "dinner"].map((meal) => (
             <option key={meal} value={meal}>
               {meal.charAt(0).toUpperCase() + meal.slice(1)}
@@ -72,4 +106,6 @@ export default function RestaurantDetails({ restaurant, onClose }) {
       </button>
     </div>
   );
-}
+};
+
+export default RestaurantDetails;
