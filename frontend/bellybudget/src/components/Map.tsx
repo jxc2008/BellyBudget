@@ -10,7 +10,7 @@ const GEOAPIFY_API_KEY = process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY
 
 async function getCoordinates(address: string) {
   const encodedAddress = encodeURIComponent(address)
-  const url = `https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&apiKey=${GEOAPIFY_API_KEY}`
+  const url = `https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&apiKey=9182062136cc42f39ecfd41ada924841`
   try {
     const response = await axios.get(url)
     const results = response.data.features

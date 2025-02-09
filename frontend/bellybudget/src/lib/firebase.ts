@@ -12,6 +12,7 @@ import {
   getAuth,
   onAuthStateChanged
 } from "firebase/auth";
+// import { auth, db } from "./firebase"; // Ensure correct Firebase import
 
 // Your Firebase configuration (replace with your actual config values)
 const firebaseConfig = {
@@ -108,4 +109,82 @@ export const subscribeToMealPlan = (callback: (data: any) => void) => {
   };
 };
 
+export const insertMealPlan = async () => {
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        console.warn("⚠️ No authenticated user found.");
+        resolve(null);
+        return;
+      }
+
+      try {
+        // Step 1: Fetch restaurant data from /schedule
+        const response = await fetch("http://localhost:3001/schedule");
+        const restaurants = await response.json();
+
+        // Log response to debug
+        console.log("📌 Restaurant API Response:", restaurants);
+
+        if (!Array.isArray(restaurants) || restaurants.length === 0) {
+          console.error("❌ No valid restaurant data received.");
+          resolve(null);
+          return;
+        }
+
+        // Step 2: Fetch existing meal plan from Firestore
+        const mealPlanRef = doc(db, "users", user.uid, "mealPlan", "calendar");
+        const mealPlanSnap = await getDoc(mealPlanRef);
+
+        let mealPlan = mealPlanSnap.exists() ? mealPlanSnap.data() : {};
+
+        // Define days and meal slots
+        const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+        const mealTypes = ["breakfast", "lunch", "dinner"];
+
+        // Step 3: Assign restaurants to meal slots
+        let restaurantIndex = 0;
+
+        for (let i = 0; i < days.length; i++) {
+          const day = days[i];
+          mealPlan[day] = mealPlan[day] || {}; // Ensure the day exists
+
+          for (let j = 0; j < mealTypes.length; j++) {
+            const mealType = mealTypes[j];
+            const restaurant = restaurants[restaurantIndex % restaurants.length]; // Rotate through restaurants
+
+            // Ensure we're not inserting "Soup" or "French Toast" as defaults
+            if (restaurant && restaurant.name) {
+              mealPlan[day][mealType] = {
+                name: restaurant.name,
+                address: restaurant.vicinity,
+                price_level: restaurant.price_level,
+                rating: restaurant.rating,
+                estimated_cost: restaurant.estimated_cost,
+              };
+            } else {
+              console.warn(`⚠️ Skipping meal assignment for ${day} ${mealType} due to missing restaurant data.`);
+            }
+
+            restaurantIndex++; // Move to the next restaurant
+          }
+        }
+
+        // Log final meal plan before saving to Firestore
+        console.log("📌 Final Meal Plan Before Firestore:", mealPlan);
+
+        // Step 4: Save meal plan to Firestore
+        await setDoc(mealPlanRef, mealPlan, { merge: true });
+
+        console.log("✅ Meal plan inserted successfully!");
+        resolve(mealPlan);
+      } catch (error) {
+        console.error("❌ Error inserting meal plan:", error);
+        reject(error);
+      }
+    });
+  });
+};
+
+insertMealPlan().then((data) => console.log("Meal plan inserted:", data));
 export { app };
