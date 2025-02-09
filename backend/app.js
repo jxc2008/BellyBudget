@@ -1,8 +1,7 @@
 // app.js
-const express = require('express');
-const mongoose = require('mongoose');
-const config = require('./config');
-const routes = require('./routes');
+import express from 'express';
+import mongoose from 'mongoose';
+import config from './config.js';
 
 const app = express();
 
@@ -10,7 +9,7 @@ const app = express();
 app.use(express.json());
 
 // Use the API routes defined in routes.js (all prefixed with /api)
-app.use('/api', routes);
+
 
 // Connect to MongoDB Atlas
 mongoose
@@ -19,9 +18,8 @@ mongoose
     console.log('Connected to MongoDB Atlas');
 
     // Start the server only after a successful DB connection
-    const port = config.PORT;
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+    app.listen(2000, () => {
+      console.log(`Server is running on port ${2000}`);
     });
   })
   .catch(err => {

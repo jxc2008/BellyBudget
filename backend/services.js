@@ -22,13 +22,13 @@ const restaurantService = {
     console.log(typeof resultList);
     resultList.forEach(restaurant => {
         filterResults.push({
-          name: restaurant.name,
-          opening_hours: restaurant.opening_hours,
-          price_level: restaurant.price_level,
-          rating: restaurant.rating,
-          scope: restaurant.scope,
-          vicinity: restaurant.vicinity,
-          user_ratings_total: restaurant.user_ratings_total
+        name: restaurant.name,
+        opening_hours: restaurant.opening_hours,
+        price_level: restaurant.price_level,
+        rating: restaurant.rating,
+        scope: restaurant.scope,
+        vicinity: restaurant.vicinity,
+        user_ratings_total: restaurant.user_ratings_total
         });
       });    
     console.log("print");
