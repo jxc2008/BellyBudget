@@ -154,7 +154,9 @@ export default function Dashboard() {
   const navItems = [
     { id: "overview", label: "Overview", icon: Home },
     { id: "planner", label: "Planner", icon: Calendar },
+    { id: "planner", label: "Planner", icon: Calendar },
     { id: "budget", label: "Budget", icon: BudgetIcon },
+    { id: "expenses", label: "Expenses", icon: DollarSign },
     { id: "profile", label: "Profile", icon: User },
     { id: "settings", label: "Settings", icon: Settings }, // This is the Settings icon.
   ];
