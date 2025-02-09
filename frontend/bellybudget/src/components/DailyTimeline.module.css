@@ -1,0 +1,85 @@
+.timeline {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 200px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.timeline:hover {
+  width: 300px;
+}
+
+.timelineMask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.timelineContent {
+  padding: 1rem;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.title {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.meal {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.meal h3 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.meal p {
+  color: #666;
+}
+
+.timelineTicks {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem 0;
+}
+
+.tick {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.tickLabel {
+  font-size: 0.6rem;
+  color: #999;
+  margin-right: 5px;
+}
+
+.tick::after {
+  content: "";
+  width: 10px;
+  height: 1px;
+  background-color: #999;
+}
+

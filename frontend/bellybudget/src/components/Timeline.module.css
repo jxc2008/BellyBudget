@@ -1,0 +1,147 @@
+.timeline {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  z-index: 100;
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+
+.timeline.expanded {
+  width: 280px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.timelineTicks {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem 0.5rem;
+}
+
+.tick {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 4px 0;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.tickLabel {
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.7);
+  margin-right: 8px;
+  width: 36px;
+  text-align: right;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  white-space: nowrap;
+}
+
+.tick::after {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  margin-right: 8px;
+}
+
+.tickHovered::after {
+  width: 32px;
+  background-color: rgba(102, 102, 102, 0.8);
+}
+
+.mealIndicator {
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mealDot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.tickHovered .mealDot {
+  transform: scale(1.5);
+}
+
+.timelineContent {
+  position: absolute;
+  left: 10px;
+  width: 150px;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.1s linear;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(-100%);
+  z-index: 20;
+}
+
+.timeline.expanded .timelineContent {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.currentTimeIndicator {
+  position: absolute;
+  right: 0;
+  width: 100%;
+  height: 2px;
+  background-color: red;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .timeline {
+    width: 60px;
+  }
+
+  .timeline.expanded {
+    width: 240px;
+  }
+
+  .timelineTicks {
+    width: 60px;
+  }
+
+  .tickLabel {
+    font-size: 0.7rem;
+    width: 32px;
+  }
+
+  .tick::after {
+    width: 20px;
+  }
+}
+

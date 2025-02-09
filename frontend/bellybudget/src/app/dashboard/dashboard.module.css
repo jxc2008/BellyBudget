@@ -1,412 +1,657 @@
 .container {
-    display: flex;
-    min-height: 100vh;
-    background-color: #f8fafc;
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: white;
+  border-right: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.welcomeText {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1e293b;
+}
+
+.userEmail {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.logoutButton {
+  background-color: #ef4444;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logoutButton:hover {
+  background-color: #dc2626;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.375rem;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navItem:hover {
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+.navItemActive {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.navIcon {
+  margin-right: 0.75rem;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.amount {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1e293b;
+}
+
+.chart {
+  width: 100%;
+  height: 200px;
+  background-color: #f8fafc;
+  border-radius: 0.375rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+
+.recentTransactions {
+  margin-top: 2rem;
+}
+
+.transactionList {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.transaction {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.transaction:last-child {
+  border-bottom: none;
+}
+
+.transactionInfo {
+  display: flex;
+  align-items: center;
+}
+
+.transactionIcon {
+  width: 2rem;
+  height: 2rem;
+  background-color: #f1f5f9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.transactionAmount {
+  font-weight: 600;
+}
+
+.expense {
+  color: #ef4444;
+}
+
+.income {
+  color: #22c55e;
+}
+
+.profileContainer {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.sectionSubtitle {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1e293b;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.button {
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: #2563eb;
+}
+
+.message {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  background-color: #e2e8f0;
+  color: #1e293b;
+  text-align: center;
+}
+
+/* Budget component styles */
+.budgetContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.budgetSummary {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.budgetCharts {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.pieChartContainer,
+.barChartContainer {
+  width: 48%;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.budgetCategories {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.budgetTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.budgetTable th,
+.budgetTable td {
+  padding: 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.budgetTable th {
+  font-weight: bold;
+  color: #4a5568;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  color: #e53e3e;
+  cursor: pointer;
+}
+
+.addCategory {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.addCategoryForm {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  background-color: #357abd;
+}
+
+/* Expenses component styles */
+.expensesContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.expensesSummary {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.expensesChart {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.expensesList {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.expensesTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.expensesTable th,
+.expensesTable td {
+  padding: 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.expensesTable th {
+  font-weight: bold;
+  color: #4a5568;
+}
+
+.addExpense {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.addExpenseForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.addExpenseForm .input {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Planner component styles */
+.plannerContainer {
+  position: relative;
+  height: calc(100vh - 4rem); /* Adjust based on your header height */
+  overflow: hidden;
+}
+
+.plannerContent {
+  display: flex;
+  height: 100%;
+}
+
+/* Adjust the Map component to take up the available space */
+.plannerContent > div:first-child {
+  flex: 1;
+}
+
+/* Timeline component styles */
+.timeline {
+  width: 80px;
+  transition: width 0.3s ease;
+}
+
+.timeline:hover {
+  width: 280px;
+}
+
+/* WeeklyCalendarButton styles */
+.calendarButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+/* WeeklyCalendarOverlay styles */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  z-index: 1001;
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.overlay.closing {
+  animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.calendar {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
+  backdrop-filter: blur(8px);
+  padding: 2rem;
+  width: 400px;
+  height: 100%;
+  position: relative;
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.calendar.closing {
+  animation: slideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    background-color: rgba(0, 0, 0, 0);
   }
-  
+  to {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendarTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.closeButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.calendarDay {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 1rem;
+}
+
+.calendarDay:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.calendarDayHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendarMeal {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.calendarMeal:last-child {
+  margin-bottom: 0;
+}
+
+.calendarMealLabel {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.calendarMealInput {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.calendarMealInput:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+}
+
+/* Map component styles */
+.mapContainer {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.map {
+  height: 100%;
+  width: 100%;
+}
+
+/* Hide Google Maps attribution */
+.map :global(.gmnoprint),
+.map :global(.gm-style-cc),
+.map :global(a[href^="https://maps.google.com/maps"]) {
+  display: none !important;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
   .sidebar {
-    width: 250px;
-    background-color: white;
-    border-right: 1px solid #e2e8f0;
-    padding: 1.5rem;
-    display: flex;
+    width: 200px;
+  }
+
+  .mainContent {
+    padding: 1rem;
+  }
+
+  .gridContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .budgetCharts {
     flex-direction: column;
   }
-  
-  .mainContent {
-    flex: 1;
-    padding: 2rem;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  
-  .welcomeText {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #1e293b;
-  }
-  
-  .userEmail {
-    color: #64748b;
-    font-size: 0.875rem;
-  }
-  
-  .logoutButton {
-    background-color: #ef4444;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .logoutButton:hover {
-    background-color: #dc2626;
-  }
-  
-  .navItem {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
-    border-radius: 0.375rem;
-    color: #64748b;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .navItem:hover {
-    background-color: #f1f5f9;
-    color: #1e293b;
-  }
-  
-  .navItemActive {
-    background-color: #e2e8f0;
-    color: #1e293b;
-  }
-  
-  .navIcon {
-    margin-right: 0.75rem;
-  }
-  
-  .gridContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
-  
-  .card {
-    background-color: white;
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .cardHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  .cardTitle {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1e293b;
-  }
-  
-  .amount {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #1e293b;
-  }
-  
-  .chart {
-    width: 100%;
-    height: 200px;
-    background-color: #f8fafc;
-    border-radius: 0.375rem;
-    margin-top: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #64748b;
-  }
-  
-  .recentTransactions {
-    margin-top: 2rem;
-  }
-  
-  .transactionList {
-    background-color: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .transaction {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  
-  .transaction:last-child {
-    border-bottom: none;
-  }
-  
-  .transactionInfo {
-    display: flex;
-    align-items: center;
-  }
-  
-  .transactionIcon {
-    width: 2rem;
-    height: 2rem;
-    background-color: #f1f5f9;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-  }
-  
-  .transactionAmount {
-    font-weight: 600;
-  }
-  
-  .expense {
-    color: #ef4444;
-  }
-  
-  .income {
-    color: #22c55e;
-  }
-  
-  .profileContainer {
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  
-  .sectionTitle {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #1e293b;
-    margin-bottom: 1rem;
-  }
-  
-  .sectionSubtitle {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #1e293b;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .formGroup {
-    margin-bottom: 1rem;
-  }
-  
-  .label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #64748b;
-  }
-  
-  .input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-    font-size: 1rem;
-  }
-  
-  .input:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 1px #3b82f6;
-  }
-  
-  .button {
-    background-color: #3b82f6;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.375rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .button:hover {
-    background-color: #2563eb;
-  }
-  
-  .message {
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    border-radius: 0.375rem;
-    background-color: #e2e8f0;
-    color: #1e293b;
-    text-align: center;
-  }
-  
-  /* Budget component styles */
-  .budgetContainer {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .budgetSummary {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-  }
-  
-  .budgetCharts {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-  }
-  
+
   .pieChartContainer,
   .barChartContainer {
-    width: 48%;
-    background-color: white;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .budgetCategories {
-    background-color: white;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-  }
-  
-  .budgetTable {
     width: 100%;
-    border-collapse: collapse;
+    margin-bottom: 1rem;
   }
-  
-  .budgetTable th,
-  .budgetTable td {
-    padding: 0.5rem;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  
-  .budgetTable th {
-    font-weight: bold;
-    color: #4a5568;
-  }
-  
-  .removeButton {
-    background: none;
-    border: none;
-    color: #e53e3e;
-    cursor: pointer;
-  }
-  
-  .addCategory {
-    background-color: white;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .addCategoryForm {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  
-  .addButton {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .addButton:hover {
-    background-color: #357abd;
-  }
-  
-  /* Expenses component styles */
-  .expensesContainer {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .expensesSummary {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-  }
-  
-  .expensesChart {
-    background-color: white;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-  }
-  
-  .expensesList {
-    background-color: white;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-  }
-  
-  .expensesTable {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .expensesTable th,
-  .expensesTable td {
-    padding: 0.5rem;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  
-  .expensesTable th {
-    font-weight: bold;
-    color: #4a5568;
-  }
-  
-  .addExpense {
-    background-color: white;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
+
   .addExpenseForm {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 1rem;
+    flex-direction: column;
   }
-  
+
   .addExpenseForm .input {
-    flex: 1;
-    min-width: 200px;
+    min-width: 100%;
   }
-  
-  .addButton {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
+
+  .plannerContainer {
+    height: calc(100vh - 3rem);
   }
-  
-  .addButton:hover {
-    background-color: #357abd;
+
+  .timeline {
+    width: 60px;
   }
-  
-  
+
+  .timeline:hover {
+    width: 200px;
+  }
+
+  .calendarButton {
+    top: 10px;
+    left: 10px;
+  }
+
+  .calendar {
+    width: 100%;
+  }
+}
+

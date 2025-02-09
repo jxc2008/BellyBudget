@@ -1,0 +1,23 @@
+.calendarButton {
+  position: fixed;
+  top: 100px; /* Moved down from 70px */
+  left: 20px;
+  padding: 12px;
+  background-color: rgba(var(--primary-color-rgb), 0.9); /* Increased opacity */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.calendarButton:hover {
+  background-color: rgba(var(--primary-color-rgb), 1); /* Full opacity on hover */
+  transform: scale(1.1);
+}
+
