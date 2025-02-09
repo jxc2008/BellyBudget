@@ -3,27 +3,27 @@
 import React from "react";
 import styles from "./survey.module.css";
 
-// Define the structure for your form data
-interface FormData {
+// Define the survey data interface.
+// This should match the one in your Survey page.
+export interface SurveyData {
   dietaryRestrictions: string;
-  // Add additional fields as needed
+  mealsPerDay: string;
+  cuisinePreferences: string[];
+  diningPreference: string;
+  allergies: string[];
+  weeklyBudget: string;
 }
 
-// Define the props for the Step1 component
+// Define the props for Step1 using SurveyData
 interface Step1Props {
-  formData: FormData;
-  setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+  formData: SurveyData;
+  setFormData: React.Dispatch<React.SetStateAction<SurveyData>>;
   handleNext: () => void;
 }
 
 const Step1: React.FC<Step1Props> = ({ formData, setFormData, handleNext }) => {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormData({ ...formData, dietaryRestrictions: e.target.value });
-  };
-
-  // Removed validation check since it's optional
-  const handleNextStep = () => {
-    handleNext();
   };
 
   return (
@@ -44,11 +44,8 @@ const Step1: React.FC<Step1Props> = ({ formData, setFormData, handleNext }) => {
         <option value="halal">Halal</option>
         <option value="kosher">Kosher</option>
       </select>
-      <div
-        className={styles.buttonContainer}
-        style={{ marginTop: "2rem", justifyContent: "center" }}
-      >
-        <button className={styles.nextButton} onClick={handleNextStep}>
+      <div className={styles.buttonContainer} style={{ marginTop: "2rem", justifyContent: "center" }}>
+        <button className={styles.nextButton} onClick={handleNext}>
           Next
         </button>
       </div>
