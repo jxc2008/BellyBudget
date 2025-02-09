@@ -1,4 +1,4 @@
-import { restaurantService } from "./services.js";
+import { findNearbyRestaurants } from "./services.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -49,7 +49,7 @@ try {
    console.error(error);
   }
 */
-const restaurants = await restaurantService.findNearbyRestaurants(40.7359, -73.9911, 1000);
+const restaurants = await findNearbyRestaurants(40.7359, -73.9911, 1000, 500, 2);
 console.log(restaurants);
 
 
