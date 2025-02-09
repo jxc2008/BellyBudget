@@ -41,4 +41,5 @@ Running It Yourself
    npm run dev
    ```
 Feature Requests
+-------------------
 Have a feature idea or a suggestion? Feel free to contact any of the developers via the about page!
