@@ -1,23 +1,40 @@
 .calendarButton {
-  position: fixed;
-  top: 100px; /* Moved down from 70px */
+  position: absolute;
+  top: 20px;
   left: 20px;
-  padding: 12px;
-  background-color: rgba(var(--primary-color-rgb), 0.9); /* Increased opacity */
-  color: white;
+  padding: 16px; /* Increased padding for larger button */
+  background-color: white; /* Changed to white background */
+  color: #4a5568; /* Dark gray text */
   border: none;
-  border-radius: 50%;
+  border-radius: 12px; /* Changed to rounded rectangle for better visibility */
   cursor: pointer;
   z-index: 1000;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  gap: 8px; /* Space between icon and text */
+  font-weight: 600; /* Make text bold */
+  font-size: 0.9rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .calendarButton:hover {
-  background-color: rgba(var(--primary-color-rgb), 1); /* Full opacity on hover */
-  transform: scale(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+  background-color: #f8f9fa;
 }
 
+.calendarIcon {
+  color: #3b82f6; /* Blue icon */
+}
+
+/* Add subtle animation for the icon */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.calendarButton:hover .calendarIcon {
+  animation: pulse 1s infinite;
+}

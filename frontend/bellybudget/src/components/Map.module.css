@@ -1,18 +1,11 @@
 .mapContainer {
   flex: 1;
-  position: relative;
+  position: relative; /* Ensure this is set to relative */
   overflow: hidden;
+  height: 100%;
 }
 
 .map {
   height: 100%;
   width: 100%;
 }
-
-/* Hide Google Maps attribution */
-.map :global(.gmnoprint),
-.map :global(.gm-style-cc),
-.map :global(a[href^="https://maps.google.com/maps"]) {
-  display: none !important;
-}
-

@@ -22,20 +22,9 @@ export default function Map() {
       const mapOptions = {
         center: { lat: 40.7128, lng: -74.006 },
         zoom: 13,
-        styles: [
-          {
-            featureType: "all",
-            elementType: "all",
-            stylers: [{ saturation: -100 }, { lightness: 50 }],
-          },
-          {
-            featureType: "poi",
-            elementType: "labels",
-            stylers: [{ visibility: "off" }],
-          },
-        ],
+        styles: [], // Removed the grayscale styles to show default colored map
         disableDefaultUI: true,
-        zoomControl: false,
+        zoomControl: true, // Added zoom control
         mapTypeControl: false,
         scaleControl: false,
         streetViewControl: false,
@@ -96,4 +85,3 @@ export default function Map() {
     </div>
   )
 }
-

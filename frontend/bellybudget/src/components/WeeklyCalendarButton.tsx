@@ -15,10 +15,10 @@ export default function WeeklyCalendarButton() {
         onClick={() => setIsCalendarOpen(true)}
         aria-label="Open Weekly Calendar"
       >
-        <Calendar size={24} />
+        <Calendar className={styles.calendarIcon} size={20} />
+        <span>Weekly Plan</span>
       </button>
       {isCalendarOpen && <WeeklyCalendarOverlay onClose={() => setIsCalendarOpen(false)} />}
     </>
   )
 }
-
