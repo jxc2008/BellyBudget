@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "../../components/Card";
 import Link from "next/link";
-import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa"; // ✅ Import social icons
+import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 import styles from "./about.module.css";
 
 export default function AboutPage() {
@@ -19,55 +19,64 @@ export default function AboutPage() {
         Back to Home
       </Link>
       <h1 className={styles.pageTitle}>About BellyBudget</h1>
-      <p className={styles.pageSubtitle}>Empowering you to make smarter food choices and save money</p>
+      <p className={styles.pageSubtitle}>
+        Empowering you to make smarter food choices and save money
+      </p>
 
       <div className={styles.cardGrid}>
-        <Card className={styles.card}>
-          <CardContent className={styles.cardContent}>
-            <h2>Our Mission</h2>
-            <p>
-              At BellyBudget, we're passionate about helping people balance their love for food with their financial
-              goals. Our app is designed to make meal planning, grocery shopping, and budget tracking seamless and
-              enjoyable.
-            </p>
-          </CardContent>
-        </Card>
-        <Card className={styles.card}>
-          <CardContent className={styles.cardContent}>
-            <h2>Our Vision</h2>
-            <p>
-              We envision a world where everyone can enjoy delicious, nutritious meals without breaking the bank.
-              BellyBudget is our contribution to making this vision a reality, one meal at a time.
-            </p>
-          </CardContent>
-        </Card>
+        <div className={styles.card}>
+          <Card>
+            <CardContent className={styles.cardContent}>
+              <h2>Our Mission</h2>
+              <p>
+                At BellyBudget, we're passionate about helping people balance their
+                love for food with their financial goals. Our app is designed to make meal
+                planning, grocery shopping, and budget tracking seamless and enjoyable.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+        <div className={styles.card}>
+          <Card>
+            <CardContent className={styles.cardContent}>
+              <h2>Our Vision</h2>
+              <p>
+                We envision a world where everyone can enjoy delicious, nutritious meals without
+                breaking the bank. BellyBudget is our contribution to making this vision a reality,
+                one meal at a time.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       <h2 className={styles.teamTitle}>Meet Our Team</h2>
       <div className={styles.teamGrid}>
         {teamMembers.map((member, index) => (
-          <Card
+          <div
             key={member.name}
             className={`${styles.card} ${mounted ? styles.fadeIn : ""}`}
             style={{ animationDelay: `${0.8 + index * 0.2}s` }}
           >
-            <CardContent className={styles.cardContent}>
-              <h3>{member.name}</h3>
-              <p className={styles.memberRole}>{member.role}</p>
-              <p className={styles.memberBio}>{member.bio}</p>
-              <div className={styles.socialLinks}>
-                <Link href={member.github} target="_blank" rel="noopener noreferrer">
-                  <FaGithub size={24} className={styles.icon} />
-                </Link>
-                <Link href={member.linkedin} target="_blank" rel="noopener noreferrer">
-                  <FaLinkedin size={24} className={styles.icon} />
-                </Link>
-                <Link href={`mailto:${member.email}`}>
-                  <FaEnvelope size={24} className={styles.icon} />
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardContent className={styles.cardContent}>
+                <h3>{member.name}</h3>
+                <p className={styles.memberRole}>{member.role}</p>
+                <p className={styles.memberBio}>{member.bio}</p>
+                <div className={styles.socialLinks}>
+                  <Link href={member.github} target="_blank" rel="noopener noreferrer">
+                    <FaGithub size={24} className={styles.icon} />
+                  </Link>
+                  <Link href={member.linkedin} target="_blank" rel="noopener noreferrer">
+                    <FaLinkedin size={24} className={styles.icon} />
+                  </Link>
+                  <Link href={`mailto:${member.email}`}>
+                    <FaEnvelope size={24} className={styles.icon} />
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         ))}
       </div>
     </div>
