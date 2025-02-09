@@ -24,14 +24,13 @@ export default function AboutPage() {
       </p>
 
       <div className={styles.cardGrid}>
+        {/* Wrap the Card component in a div so that the className is applied to the wrapper instead */}
         <div className={styles.card}>
           <Card>
             <CardContent className={styles.cardContent}>
               <h2>Our Mission</h2>
               <p>
-                At BellyBudget, we're passionate about helping people balance their
-                love for food with their financial goals. Our app is designed to make meal
-                planning, grocery shopping, and budget tracking seamless and enjoyable.
+                At BellyBudget, we're passionate about helping people balance their love for food with their financial goals. Our app is designed to make meal planning, grocery shopping, and budget tracking seamless and enjoyable.
               </p>
             </CardContent>
           </Card>
@@ -41,9 +40,7 @@ export default function AboutPage() {
             <CardContent className={styles.cardContent}>
               <h2>Our Vision</h2>
               <p>
-                We envision a world where everyone can enjoy delicious, nutritious meals without
-                breaking the bank. BellyBudget is our contribution to making this vision a reality,
-                one meal at a time.
+                We envision a world where everyone can enjoy delicious, nutritious meals without breaking the bank. BellyBudget is our contribution to making this vision a reality, one meal at a time.
               </p>
             </CardContent>
           </Card>
