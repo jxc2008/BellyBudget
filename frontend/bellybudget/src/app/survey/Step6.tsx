@@ -1,23 +1,19 @@
-import styles from "./survey.module.css"
-import { useRouter } from "next/navigation"
+import styles from "./survey.module.css";
 
 const Step6 = ({ formData, setFormData, handleBack, handleSubmit }) => {
-  const router = useRouter()
-
   const handleChange = (e) => {
-    setFormData({ ...formData, weeklyBudget: e.target.value })
-  }
+    setFormData({ ...formData, weeklyBudget: e.target.value });
+  };
 
-  const handleSubmitAndRedirect = () => {
+  const handleSubmitAndReveal = () => {
     if (Number.parseFloat(formData.weeklyBudget) < 50) {
-      alert("Weekly budget must be at least $50")
-      return
+      alert("Weekly budget must be at least $50");
+      return;
     }
-    console.log("Survey completed:", formData)
-    alert("Thank you for completing the survey!")
-    handleSubmit() // Call the handleSubmit function from props
-    router.push("/dashboard") // Redirect to the dashboard
-  }
+    console.log("Survey completed:", formData);
+    // Call parent's handleSubmit; do not redirect here.
+    handleSubmit();
+  };
 
   return (
     <div>
@@ -31,17 +27,16 @@ const Step6 = ({ formData, setFormData, handleBack, handleSubmit }) => {
         placeholder="Enter your weekly budget (min $50)"
         min="50"
       />
-      {/* Add margin-top to create space between the input and buttons */}
       <div className={styles.buttonContainer} style={{ marginTop: "2rem" }}>
         <button className={styles.backButton} onClick={handleBack}>
           Back
         </button>
-        <button className={styles.submitButton} onClick={handleSubmitAndRedirect}>
+        <button className={styles.submitButton} onClick={handleSubmitAndReveal}>
           Submit
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Step6
+export default Step6;
