@@ -9,7 +9,7 @@ const app = express();
 app.use(cors()); // Enable CORS for frontend access
 app.use(express.json()); // Enable JSON parsing
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3001;
 
 // Configure Plaid API
 const configuration = new Configuration({

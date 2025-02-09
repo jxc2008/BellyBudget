@@ -56,3 +56,26 @@
     background-color: #c0392b;
   }
   
+  .surveyButton {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .surveyButton:hover {
+    background-color: #2980b9;
+  }
+  
+  .surveyButton.highlight {
+    animation: pulse 2s infinite;
+  }
+  
+  .surveyStatus {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0.25rem 0 0 0;
+  }

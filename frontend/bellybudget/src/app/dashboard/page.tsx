@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { auth, db } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { BudgetProvider } from "@/contexts/BudgetContext";
 import styles from "./dashboard.module.css";
 import { Home, Settings, Calendar as CalendarIcon, User, ShoppingBag, Pizza, Coffee, Pocket as BudgetIcon, ClipboardList } from "lucide-react";
@@ -32,6 +32,16 @@ type SpendingData = {
   color: string;
 };
 
+type UserData = {
+  surveyData: {
+    weeklyBudget: string;
+    mealsPerDay: string;
+    cuisinePreferences: string[];
+    dietaryRestrictions: string;
+    diningPreference: string;
+  };
+};
+
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -42,9 +52,21 @@ export default function Dashboard() {
   const [spendingData, setSpendingData] = useState<SpendingData[]>([]);
 
   // Budget-related state
-  const [budget, setBudget] = useState(500);
-  const [spent, setSpent] = useState(187.85);
-  const [remaining, setRemaining] = useState(budget - spent);
+  const [weeklyBudget, setWeeklyBudget] = useState<number>(0);
+  const [totalSpent, setTotalSpent] = useState<number>(0);
+  const [remainingBudget, setRemainingBudget] = useState<number>(0);
+
+  // Helper function to filter transactions for the past week
+  const getWeeklyTransactions = (transactions: Transaction[]) => {
+    const now = new Date();
+    const weekAgo = new Date(now);
+    weekAgo.setDate(now.getDate() - 7);
+    
+    return transactions.filter(transaction => {
+      const transactionDate = new Date(transaction.date);
+      return transactionDate >= weekAgo && transactionDate <= now;
+    });
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -53,20 +75,47 @@ export default function Dashboard() {
       } else {
         setUser(currentUser);
 
-        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-        if (userDoc.exists()) {
-          setFirstName(userDoc.data().firstName || "");
-        }
+        // Set up real-time listener for user data
+        const userRef = doc(db, "users", currentUser.uid);
+        const unsubscribeSnapshot = onSnapshot(userRef, (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const userData = docSnapshot.data() as UserData;
+            if (userData?.surveyData?.weeklyBudget) {
+              const budget = parseInt(userData.surveyData.weeklyBudget);
+              setWeeklyBudget(budget);
+              console.log("Firebase budget loaded:", budget);
+            }
+            setFirstName(userData.firstName || "");
+          }
+        });
+
+        return () => unsubscribeSnapshot();
       }
     });
 
     return () => unsubscribe();
   }, [router]);
 
+  // Calculate food-related spending for the past week only
+  useEffect(() => {
+    let foodTotal = 0;
+    const weeklyTransactions = getWeeklyTransactions(transactions);
+    
+    weeklyTransactions.forEach(transaction => {
+      if (isFoodRelated(transaction.name) || 
+          (transaction.category && transaction.category.includes("Groceries"))) {
+        foodTotal += Math.abs(transaction.amount);
+      }
+    });
+    
+    setTotalSpent(foodTotal);
+    setRemainingBudget(Math.max(weeklyBudget - foodTotal, 0));
+  }, [transactions, weeklyBudget]);
+
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await fetch("http://localhost:4000/transactions");
+        const response = await fetch("http://localhost:3001/transactions");
         if (!response.ok) {
           throw new Error("Failed to fetch transactions");
         }
@@ -104,6 +153,9 @@ export default function Dashboard() {
   };
 
   const processSpendingData = (transactions: Transaction[]) => {
+    // Filter for weekly transactions first
+    const weeklyTransactions = getWeeklyTransactions(transactions);
+    
     const categoryMap = {
       Groceries: 0,
       Restaurants: 0,
@@ -111,7 +163,7 @@ export default function Dashboard() {
       Other: 0,
     };
 
-    transactions.forEach((transaction) => {
+    weeklyTransactions.forEach((transaction) => {
       const transactionName = transaction.name?.toLowerCase() || "";
 
       if (transaction.category.includes("Groceries")) {
@@ -139,8 +191,8 @@ export default function Dashboard() {
 
   const getBudgetData = () => {
     return [
-      { name: "Spent", value: spent, color: "#FF5733" },
-      { name: "Remaining", value: remaining, color: "#28A745" },
+      { name: "Spent", value: totalSpent, color: "#FF5733" },
+      { name: "Remaining", value: remainingBudget, color: "#28A745" },
     ];
   };
 
@@ -162,7 +214,6 @@ export default function Dashboard() {
           <Budget
             transactions={transactions}
             loadingTransactions={loadingTransactions}
-            budget={budget}
           />
         );
       case "planner":
@@ -178,7 +229,7 @@ export default function Dashboard() {
               <div className={styles.card}>
                 <div className={styles.cardHeader}>
                   <h2 className={styles.cardTitle}>Budget Overview</h2>
-                  <p className={styles.budgetAmount}>$500.00</p>
+                  <p className={styles.budgetAmount}>${weeklyBudget.toFixed(2)}</p>
                 </div>
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
@@ -240,7 +291,7 @@ export default function Dashboard() {
                       <div className={styles.transactionInfo}>
                         <div className={styles.transactionIcon}>
                           {isFoodRelated(transaction.name) ? (
-                            <FastFood size={20} color="#FF5733" />
+                            <Pizza size={20} color="#FF5733" />
                           ) : (
                             <ShoppingBag size={20} color="#64748b" />
                           )}
